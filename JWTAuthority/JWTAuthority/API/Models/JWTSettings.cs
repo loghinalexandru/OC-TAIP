@@ -9,5 +9,6 @@ namespace JWTAuthority.API.Models
     {
         public String Key { get; set; }
         public String Issuer { get; set; }
+        public int ExpiresInDays { get; set; }
     }
 }

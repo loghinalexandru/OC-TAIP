@@ -22,7 +22,8 @@ namespace JWTAuthority.Service
             var newUser = new User
             {
                 Username = model.Username,
-                Password = _hashHelper.GetHashAsString(model.Password)
+                Password = _hashHelper.GetHashAsString(model.Password),
+                Email = model.Email
             };
 
             _userRepository.AddUser(newUser);

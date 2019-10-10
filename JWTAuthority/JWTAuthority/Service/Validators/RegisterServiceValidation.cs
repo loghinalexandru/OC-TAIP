@@ -18,6 +18,11 @@ namespace JWTAuthority.Service.Validators
             RuleFor(model => model.Password)
                 .MinimumLength(8)
                 .WithMessage("Password is too short, minimum length is 8 characters!");
+
+            RuleFor(model => model.Email)
+                .NotEmpty()
+                .EmailAddress()
+                .WithMessage("Not a valid email adress!");
         }
     }
 }

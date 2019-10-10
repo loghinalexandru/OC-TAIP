@@ -25,7 +25,7 @@ namespace JWTAuthority.Helpers
               issuer: _settings.Issuer,
               audience: _settings.Issuer,
               claims: GetClaims(username),
-              expires: DateTime.Now.AddDays(2),
+              expires: DateTime.Now.AddDays(_settings.ExpiresInDays),
               signingCredentials: credentials
               );
 
