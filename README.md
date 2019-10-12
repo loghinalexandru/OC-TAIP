@@ -1,4 +1,4 @@
-# OC-TAIP
+# GaitAuthentication
 Repository that contains the source code developed in Advanced Software Engineering Techniques subject
 # Checklist
 - [x] Json Web Token Server
