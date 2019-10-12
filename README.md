@@ -27,7 +27,7 @@ Repository that contains the source code developed in Advanced Software Engineer
 
 ### All
 - Integration And Real World Scenario Testing
-
+***
 # Contact
 - Bolocan Diana: <dianabolocan.db@gmail.com>
 - Loghin Alexandru: <loghinalexandru61@gmail.com>
