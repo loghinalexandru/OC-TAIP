@@ -31,5 +31,5 @@ Repository that contains the source code developed in Advanced Software Engineer
 # Contact
 - Bolocan Diana: <dianabolocan.db@gmail.com>
 - Loghin Alexandru: <loghinalexandru61@gmail.com>
-- Strugari Stefan:
+- Strugari Stefan: <stefanmihaistrugari@gmail.com>
 - Ioja Petru Alexandru: <petrualexandruioja@gmail.com>
