@@ -27,13 +27,26 @@ There are many articles that describe the steps of data gathering and how the al
  - [Biometric Gait Authentication Using Accelerometer Sensor](http://www.jcomputers.us/vol1/jcp0107-06.pdf)
  - [Person Recognition using Smartphones’ Accelerometer Data](https://arxiv.org/pdf/1711.04689.pdf)
  - [A Lightweight Gait Authentication on Mobile Phone Regardless of Installation Error](https://link.springer.com/content/pdf/10.1007%2F978-3-642-39218-4_7.pdf)
- - [Lifelong Learning with Dynamically Expandable Networks](https://github.com/loghinalexandru/OC-TAIP/blob/master/Resources/A%20Novel%20Progressive%20Learning%20Technique%20for%20Multi-class%20Classification.pdf)
+
+#### [Lifelong Learning with Dynamically Expandable Networks](https://github.com/loghinalexandru/OC-TAIP/blob/master/Resources/A%20Novel%20Progressive%20Learning%20Technique%20for%20Multi-class%20Classification.pdf)
+
+In order to satify the need for scalability we can implement a dinamically expandable network to face the increasing number of users.
+Big names in this field are **Jeongtae Lee**, **Jaehong Yoon**, **Eunho Yang**, **Sung ju hwang**. The model can dynamically decide its network capacity as it trains on a sequence of tasks, to learn a compact overlapping knowledge sharing structure among tasks.
+It is trained in an online manner by performing selective retraining, dynamically expands network capacity upon arrival of each task with only the necessary number of units, and effectively prevents semantic drift by splitting/duplicating units and timestamping them.
+Results have shown that it outperforms the existing lifelong learning methods, achieving almost the same performance as the network trained in batch while using as little as 11.9% − 19.1% of its capacity.
+
+#### How it is done:
+- Incremental Learning of a Dynamically Expandable Network
+- Selective retraining
+- Dynamic network expansion
+- Network split/duplication
 ***
 ### Resources
 For now I did not find any tool to help us further in the project requirements but I did manage to find a dataset of acceloremeter readings for a preliminary test in order to validate the posibility of this method. The dataset can be found at the next link:
 
  - [motionsense-dataset](https://www.kaggle.com/malekzadeh/motionsense-dataset)
  ***
+ 
 ### Technology Stack
 - .Net Core 3.0
 - Keras
@@ -41,6 +54,7 @@ For now I did not find any tool to help us further in the project requirements b
 - Microsoft SQL Server Express
 - Entity Framework
  ***
+
 ### Libraries
 - absl-py              0.8.1
 - astor                0.8.0
