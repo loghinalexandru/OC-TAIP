@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace JWTAuthority.Controllers
 {
     [Route("[controller]")]
-    public class AuthorityController : Controller
+    [ApiController]
+    public class AuthorityController : ControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly IRegisterService _registerService;

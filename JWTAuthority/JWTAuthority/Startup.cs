@@ -1,4 +1,5 @@
 using FluentValidation.AspNetCore;
+using JWTAuthority.API.Extensions;
 using JWTAuthority.API.Models;
 using JWTAuthority.DataAccess;
 using JWTAuthority.DataAccess.Repository;
@@ -52,12 +53,14 @@ namespace JWTAuthority
 
             app.UseHttpsRedirection();
 
+            app.UseAuthorization();
             app.UseRouting();
             app.UseCors();
 
-            app.UseAuthorization();
 
             app.UseMiddleware<ExceptionMiddleware>();
+
+            app.UpdateDatabase();
 
             app.UseEndpoints(endpoints =>
             {
@@ -74,13 +77,14 @@ namespace JWTAuthority
 
         private void AddDependencyInjection(IServiceCollection services)
         {
-            services.AddSingleton(Configuration.GetSection("Jwt").Get<JWTSettings>());
+            services
+                .AddInfrastructure();
+
             services.AddSingleton<HashAlgorithm>(new SHA256CryptoServiceProvider());
 
             services.AddTransient<IValidatorInterceptor, ValidationInterceptor>();
 
             services.AddScoped<IHashHelper, HashHelper>();
-            services.AddScoped<ITokenBuilder, TokenBuilder>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IRegisterService, RegisterService>();
             services.AddScoped<IUserRepository, UserRepository>();
