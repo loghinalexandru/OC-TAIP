@@ -39,14 +39,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
-        final EditText loginButton = findViewById(R.id.email);
+        final EditText emailEditText = findViewById(R.id.email);
         final Button register = findViewById(R.id.register);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Toast.makeText(RegisterActivity.this, "CLICKED", Toast.LENGTH_SHORT).show();
+                registerViewModel.register(usernameEditText.getText().toString(), passwordEditText.getText().toString(), emailEditText.getText().toString());
             }
         });
 
