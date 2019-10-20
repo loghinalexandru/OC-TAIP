@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -23,8 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uaic.gaitauthentication.R;
-import com.uaic.gaitauthentication.ui.login.LoginViewModel;
-import com.uaic.gaitauthentication.ui.login.LoginViewModelFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -39,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
-        final Button loginButton = findViewById(R.id.login);
+        final Button loginButton = findViewById(R.id.register);
         final Button signupButton = findViewById(R.id.signup);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
@@ -122,7 +121,8 @@ public class LoginActivity extends AppCompatActivity {
         signupButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "WANT TO REGISTER", Toast.LENGTH_SHORT).show();
+                Intent registerIntent = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(registerIntent);
             }
         });
     }
