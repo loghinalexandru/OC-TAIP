@@ -8,6 +8,12 @@ Repository that contains the source code developed in Advanced Software Engineer
 - [ ] Python Script Runner Server
 - [ ] Classification Model And Algorithm
 ***
+# Requirements Analasys
+This project intends to offer a third-layer protection against mobile devices theft using the data registered when the owner of the device walks. We desire to achieve this by creating a small android app, all open source in order to make avaible this technology to any user with an android device running Lollipop 5.0 and higher.
+In order to achieve this we also have a small constraint, the mobile device used in the gait authentication process has to have a built in steps counter in order for us to determine when the user is walking and then record the accelerometer data.
+The user can disable and enable this third-layer security feature at will and it can add as many owners of the device as he wishes.
+In case of theft detection the user will be notified via email where the device is located.
+***
 # Tasks
 ### Strugari Stefan
 - Design And Develop The User Data Server
