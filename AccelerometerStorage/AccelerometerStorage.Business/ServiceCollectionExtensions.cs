@@ -7,6 +7,7 @@ namespace AccelerometerStorage.Business
         public static IServiceCollection AddBusiness(this IServiceCollection services)
         {
             services.AddScoped<IStorageService, StorageService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }

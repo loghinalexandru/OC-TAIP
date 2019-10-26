@@ -11,6 +11,8 @@ namespace AccelerometerStorage.Common
 
         public static Result<T> EnsureExists<T>(this T subject, string error) => Result.SuccessIf(subject != null, subject, error);
 
+        public static Result ToInverseResult<T>(this Maybe<T> maybe, string error) => Result.SuccessIf(maybe.HasNoValue, error);
+
         public static Result<string> EnsureIsValidString(this string subject, string errorMessage)
             => Result.SuccessIf(!string.IsNullOrEmpty(subject), subject, errorMessage);
     }

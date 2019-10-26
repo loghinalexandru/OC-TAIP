@@ -10,10 +10,9 @@ namespace AccelerometerStorage.Domain
         {
         }
 
-        private DataFile(string filename, byte[] content, User user)
+        private DataFile(string filename, User user)
         {
             Filename = filename;
-            Content = content;
             UserId = user.Id;
             User = user;
             UploadedAt = DateTime.Now;
@@ -21,22 +20,19 @@ namespace AccelerometerStorage.Domain
 
         public string Filename { get; private set; }
 
-        public byte[] Content { get; private set; }
-
         public Guid UserId { get; private set; }
 
         public User User { get; private set; }
 
         public DateTime UploadedAt { get; private set; }
 
-        public static Result<DataFile> Create(string filename, byte[] content, User user)
+        public static Result<DataFile> Create(string filename, User user)
         {
             var filenameResult = filename.EnsureIsValidString("Invalid file name");
-            var contentResult = content.EnsureExists("Content should not be null");
             var userResult = user.EnsureExists("File must belong to an user");
 
-            return Result.FirstFailureOrSuccess(filenameResult, contentResult, userResult)
-                .Map(() => new DataFile(filename, content, user));
+            return Result.FirstFailureOrSuccess(filenameResult, userResult)
+                .Map(() => new DataFile(filename, user));
         }
     }
 }

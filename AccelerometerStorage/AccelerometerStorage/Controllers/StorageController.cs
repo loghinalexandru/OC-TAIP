@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AccelerometerStorage.Business;
 using AccelerometerStorage.WebApi.Extensions;
 using CSharpFunctionalExtensions;
@@ -14,12 +13,15 @@ namespace AccelerometerStorage.WebApi
     public class StorageController : ControllerBase
     {
         private readonly IStorageService storageService;
+        private readonly IUserService userService;
 
-        public StorageController(IStorageService storageService)
+        public StorageController(IStorageService storageService, IUserService userService)
         {
             EnsureArg.IsNotNull(storageService);
+            EnsureArg.IsNotNull(userService);
 
             this.storageService = storageService;
+            this.userService = userService;
         }
 
         [HttpPost("upload")]
@@ -45,7 +47,13 @@ namespace AccelerometerStorage.WebApi
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddUser()
         {
-            throw new NotImplementedException();
+            var username = HttpContext.ExtractUsername();
+            var command = new AddUserCommand(username);
+            var result = await userService.AddUser(command);
+
+            return result.IsFailure
+                ? (IActionResult)BadRequest(Result.Failure(result.Error).ToInternalResponse())
+                : CreatedAtAction(null, result.ToInternalResponse());
         }
     }
 }

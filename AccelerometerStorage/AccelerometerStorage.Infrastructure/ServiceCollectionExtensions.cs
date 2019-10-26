@@ -1,4 +1,5 @@
-﻿using AccelerometerStorage.Common;
+﻿using AccelerometerStorage.Business;
+using AccelerometerStorage.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AccelerometerStorage.Infrastructure
@@ -7,7 +8,11 @@ namespace AccelerometerStorage.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
-            return services.AddSettings<JWTSettings>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
+            services.AddSettings<JWTSettings>();
+            services.AddSettings<StorageSettings>();
+
+            return services;
         }
     }
 }
