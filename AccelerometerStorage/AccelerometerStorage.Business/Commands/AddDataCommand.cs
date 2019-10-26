@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using EnsureThat;
-using Microsoft.AspNetCore.Http;
 
 namespace AccelerometerStorage.Business
 {
