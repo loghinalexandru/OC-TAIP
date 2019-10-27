@@ -1,8 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
-namespace JWTAuthority.API.Models
+namespace AccelerometerStorage.Infrastructure
 {
     public sealed class JWTSettings
     {
@@ -12,7 +12,7 @@ namespace JWTAuthority.API.Models
 
         public string Key { get; private set; }
 
-        public string Issuer { get; private set;  }
+        public string Issuer { get; private set; }
 
         public string Audience { get; private set; }
 

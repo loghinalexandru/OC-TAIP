@@ -1,4 +1,5 @@
 ﻿using JWTAuthority.DataAccess.Repository;
+using JWTAuthority.Domain;
 using JWTAuthority.Helpers;
 using JWTAuthority.Models;
 using JWTAuthority.Service.Validators;
@@ -23,7 +24,7 @@ namespace JWTAuthority.Service
         {
             if (IsValidUser(model))
             {
-                return _tokenBuilderService.GetToken(model.Username);
+                return _tokenBuilderService.GetToken(_userRepository.GetByUsername(model.Username));
             }
             else
             {
