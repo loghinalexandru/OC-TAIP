@@ -1,4 +1,4 @@
-package com.uaic.gaitauthentication.ui.login;
+package com.uaic.gaitauthentication.ui.register;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.uaic.gaitauthentication.data.RegisterDataSource;
 import com.uaic.gaitauthentication.data.RegisterRepository;
+import com.uaic.gaitauthentication.ui.register.RegisterViewModel;
 
 public class RegisterViewModelFactory implements ViewModelProvider.Factory {
     @NonNull

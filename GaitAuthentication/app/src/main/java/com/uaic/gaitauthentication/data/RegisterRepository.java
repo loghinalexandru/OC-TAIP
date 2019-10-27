@@ -1,6 +1,9 @@
 package com.uaic.gaitauthentication.data;
 
 import com.uaic.gaitauthentication.data.model.RegisterModel;
+import java.util.concurrent.Future;
+
+import okhttp3.Response;
 
 public class RegisterRepository {
 
@@ -16,12 +19,11 @@ public class RegisterRepository {
         if (instance == null) {
             instance = new RegisterRepository(dataSource);
         }
+
         return instance;
     }
 
-    public Result register(RegisterModel model){
-
-        return dataSource.register(model);
+    public Future<Response> register(RegisterModel model){
+       return dataSource.register(model);
     }
-
 }

@@ -1,15 +1,21 @@
 package com.uaic.gaitauthentication.ui.login;
 
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import android.os.Build;
 import android.util.Patterns;
 
 import com.uaic.gaitauthentication.data.LoginRepository;
-import com.uaic.gaitauthentication.data.Result;
+import com.uaic.gaitauthentication.helpers.Result;
 import com.uaic.gaitauthentication.data.model.LoggedInUser;
 import com.uaic.gaitauthentication.R;
+
+import java.util.concurrent.Future;
+
+import okhttp3.Response;
 
 public class LoginViewModel extends ViewModel {
 
@@ -29,16 +35,9 @@ public class LoginViewModel extends ViewModel {
         return loginResult;
     }
 
-    public void login(String username, String password) {
-        // can be launched in a separate asynchronous job
-        Result<LoggedInUser> result = loginRepository.login(username, password);
-
-        if (result instanceof Result.Success) {
-            LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public Future<Response> login(String username, String password) {
+        return loginRepository.login(username, password);
     }
 
     public void loginDataChanged(String username, String password) {

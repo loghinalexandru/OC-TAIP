@@ -1,30 +1,23 @@
-package com.uaic.gaitauthentication.ui.login;
+package com.uaic.gaitauthentication.ui.register;
 
-import android.app.Activity;
-
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.uaic.gaitauthentication.R;
-import com.uaic.gaitauthentication.ui.login.LoginViewModel;
-import com.uaic.gaitauthentication.ui.login.LoginViewModelFactory;
+import com.uaic.gaitauthentication.helpers.AsyncTaskHttpCall;
+import com.uaic.gaitauthentication.helpers.AsyncTaskRegister;
+
+import java.util.concurrent.Future;
+
+import okhttp3.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -46,10 +39,12 @@ public class RegisterActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RegisterActivity.this, "CLICKED", Toast.LENGTH_SHORT).show();
-                registerViewModel.register(usernameEditText.getText().toString(), passwordEditText.getText().toString(), emailEditText.getText().toString());
+                loadingProgressBar.setVisibility(View.VISIBLE);
+                Future<Response> future = registerViewModel.register(usernameEditText.getText().toString(), passwordEditText.getText().toString(), emailEditText.getText().toString());
+                new AsyncTaskRegister(RegisterActivity.this).execute(future);
             }
         });
 
     }
+
 }

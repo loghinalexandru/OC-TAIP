@@ -1,6 +1,15 @@
 package com.uaic.gaitauthentication.data;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.uaic.gaitauthentication.data.model.LoggedInUser;
+import com.uaic.gaitauthentication.data.model.LoginModel;
+
+import java.util.concurrent.Future;
+
+import okhttp3.Response;
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -11,10 +20,6 @@ public class LoginRepository {
     private static volatile LoginRepository instance;
 
     private LoginDataSource dataSource;
-
-    // If user credentials will be cached in local storage, it is recommended it be encrypted
-    // @see https://developer.android.com/training/articles/keystore
-    private LoggedInUser user = null;
 
     // private constructor : singleton access
     private LoginRepository(LoginDataSource dataSource) {
@@ -28,27 +33,8 @@ public class LoginRepository {
         return instance;
     }
 
-    public boolean isLoggedIn() {
-        return user != null;
-    }
-
-    public void logout() {
-        user = null;
-        dataSource.logout();
-    }
-
-    private void setLoggedInUser(LoggedInUser user) {
-        this.user = user;
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
-    }
-
-    public Result<LoggedInUser> login(String username, String password) {
-        // handle login
-        Result<LoggedInUser> result = dataSource.login(username, password);
-        if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());
-        }
-        return result;
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public Future<Response> login(String username, String password) {
+        return dataSource.login(new LoginModel(username, password));
     }
 }

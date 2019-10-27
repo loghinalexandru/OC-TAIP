@@ -1,13 +1,17 @@
 package com.uaic.gaitauthentication.data;
 
-import android.util.Log;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
+import com.uaic.gaitauthentication.helpers.Constants;
+import com.uaic.gaitauthentication.helpers.OkHttpResponseFuture;
 import com.uaic.gaitauthentication.data.model.RegisterModel;
-import java.io.IOException;
+
+import java.util.concurrent.Future;
 
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,29 +26,11 @@ public class RegisterDataSource {
         jsonParser = new Gson();
     }
 
-    public Result register(RegisterModel model) {
+    public Future<Response> register(RegisterModel model) {
+        OkHttpClient client = new OkHttpClient();
+        Request registerRequest = createRequest(model, Constants.registerEndpoint);
 
-        try {
-            OkHttpClient client = new OkHttpClient();
-            Request registerRequest = createRequest(model, Constants.registerEndpoint);
-
-            client.newCall(registerRequest).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.d("FAIL", e.toString());
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    Log.d("SUCCES", response.body().string());
-                }
-            });
-
-        } catch (Exception e) {
-            return new Result.Error(new IOException("Error when signing up", e));
-        }
-
-        return new Result.Error();
+        return makeRequest(client, registerRequest);
     }
 
     private Request createRequest(RegisterModel model, String endpoint){
@@ -56,5 +42,16 @@ public class RegisterDataSource {
                 .post(requestBody)
                 .url(endpoint)
                 .build();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private Future<Response> makeRequest(OkHttpClient client, Request request) {
+        Call call = client.newCall(request);
+
+        OkHttpResponseFuture result = new OkHttpResponseFuture();
+
+        call.enqueue(result);
+
+        return result.future;
     }
 }

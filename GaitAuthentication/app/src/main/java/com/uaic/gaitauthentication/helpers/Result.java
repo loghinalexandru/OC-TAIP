@@ -1,4 +1,4 @@
-package com.uaic.gaitauthentication.data;
+package com.uaic.gaitauthentication.helpers;
 
 /**
  * A generic class that holds a result success w/ data or an error exception.
