@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.uaic.gaitauthentication.data.RegisterDataSource;
 import com.uaic.gaitauthentication.data.RegisterRepository;
-import com.uaic.gaitauthentication.ui.register.RegisterViewModel;
 
 public class RegisterViewModelFactory implements ViewModelProvider.Factory {
     @NonNull

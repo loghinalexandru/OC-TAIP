@@ -14,30 +14,18 @@
     <fragment
         android:id="@+id/nav_gallery"
         android:name="com.uaic.gaitauthentication.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
+        android:label="@string/menu_profiles"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="com.uaic.gaitauthentication.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:label="@string/menu_authentication"
         tools:layout="@layout/fragment_slideshow" />
 
     <fragment
         android:id="@+id/nav_tools"
-        android:name="com.uaic.gaitauthentication.ui.tools.ToolsFragment"
-        android:label="@string/menu_tools"
+        android:name="com.uaic.gaitauthentication.ui.sensors.SensorsFragment"
+        android:label="@string/menu_sensors"
         tools:layout="@layout/fragment_tools" />
-
-    <fragment
-        android:id="@+id/nav_share"
-        android:name="com.uaic.gaitauthentication.ui.share.ShareFragment"
-        android:label="@string/menu_share"
-        tools:layout="@layout/fragment_share" />
-
-    <fragment
-        android:id="@+id/nav_send"
-        android:name="com.uaic.gaitauthentication.ui.send.SendFragment"
-        android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
 </navigation>

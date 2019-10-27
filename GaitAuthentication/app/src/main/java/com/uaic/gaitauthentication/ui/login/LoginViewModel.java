@@ -20,7 +20,6 @@ import okhttp3.Response;
 public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
-    private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
 
     LoginViewModel(LoginRepository loginRepository) {
@@ -29,10 +28,6 @@ public class LoginViewModel extends ViewModel {
 
     LiveData<LoginFormState> getLoginFormState() {
         return loginFormState;
-    }
-
-    LiveData<LoginResult> getLoginResult() {
-        return loginResult;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -64,6 +59,6 @@ public class LoginViewModel extends ViewModel {
 
     // A placeholder password validation check
     private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
+        return password != null && password.trim().length() >= 8;
     }
 }
