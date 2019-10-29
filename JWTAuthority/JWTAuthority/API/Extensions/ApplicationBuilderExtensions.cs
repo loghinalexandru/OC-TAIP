@@ -13,10 +13,8 @@ namespace JWTAuthority.API.Extensions
                 .GetRequiredService<IServiceScopeFactory>()
                 .CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<JWTContext>())
-                {
-                    context.Database.Migrate();
-                }
+                using var context = serviceScope.ServiceProvider.GetService<JWTContext>();
+                context.Database.Migrate();
             }
 
             return app;

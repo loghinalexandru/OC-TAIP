@@ -5,6 +5,6 @@ namespace JWTAuthority.Service
 {
     public interface IAuthenticationService
     {
-        public String Authenticate(AuthorizationModel model);
+        string Authenticate(AuthorizationModel model);
     }
 }

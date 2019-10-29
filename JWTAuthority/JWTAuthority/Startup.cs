@@ -1,6 +1,5 @@
 using FluentValidation.AspNetCore;
 using JWTAuthority.API.Extensions;
-using JWTAuthority.API.Models;
 using JWTAuthority.DataAccess;
 using JWTAuthority.DataAccess.Repository;
 using JWTAuthority.Helpers;
@@ -30,16 +29,14 @@ namespace JWTAuthority
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<JWTContext>(options =>
-                  options.UseSqlServer(Configuration.GetConnectionString("AuthorityDatabase"))
+                options.UseSqlServer(Configuration.GetConnectionString("AuthorityDatabase"))
             );
 
             services.AddControllers()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AuthenticationServiceValidator>());
+                .AddFluentValidation(
+                    fv => fv.RegisterValidatorsFromAssemblyContaining<AuthenticationServiceValidator>());
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Authority", Version = "v1" });
-            });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Authority", Version = "v1"}); });
 
             AddDependencyInjection(services);
         }
@@ -62,23 +59,16 @@ namespace JWTAuthority
 
             app.UpdateDatabase();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Authority v1");
-            });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Authority v1"); });
         }
 
         private void AddDependencyInjection(IServiceCollection services)
         {
-            services
-                .AddInfrastructure();
+            services.AddInfrastructure();
 
             services.AddSingleton<HashAlgorithm>(new SHA256CryptoServiceProvider());
 

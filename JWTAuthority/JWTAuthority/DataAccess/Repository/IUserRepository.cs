@@ -5,7 +5,8 @@ namespace JWTAuthority.DataAccess.Repository
 {
     public interface IUserRepository
     {
-        User GetByUsername(String username);
+        User GetByUsername(string username);
+        bool IsAvailableUsername(string username);
         void AddUser(User user);
     }
 }

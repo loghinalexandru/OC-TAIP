@@ -1,9 +1,10 @@
 ﻿using JWTAuthority.API.Models;
 using JWTAuthority.Models;
 using JWTAuthority.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace JWTAuthority.Controllers
+namespace JWTAuthority.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
@@ -19,19 +20,24 @@ namespace JWTAuthority.Controllers
         }
 
         [HttpPost("token")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetToken([FromBody] AuthorizationModel model)
         {
             var result = _authenticationService.Authenticate(model);
 
-            if(result == null)
+            if (result == null)
             {
-                return Unauthorized();
+                return Unauthorized("Wrong email or password!");
             }
 
             return Ok(result);
         }
 
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult RegisterUser([FromBody] RegisterModel model)
         {
             _registerService.Register(model);

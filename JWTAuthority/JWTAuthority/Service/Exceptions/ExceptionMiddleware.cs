@@ -25,24 +25,27 @@ namespace JWTAuthority.Service.Exceptions
             {
                 await HandleExceptionAsync(httpContext, ex);
             }
+            catch (Exception ex)
+            {
+                await httpContext.Response.WriteAsync(ex.Message);
+            }
         }
 
         private Task HandleExceptionAsync(HttpContext context, AggregateException exception)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
 
-            var errorMessages = new List<string>();
+            var errorMessages = new Dictionary<string, string>();
 
-            foreach(var ex in exception.InnerExceptions)
+            foreach (var ex in exception.InnerExceptions)
             {
-                errorMessages.Add(ex.Message);
+                errorMessages[ex.Message.Split(":")[0]] = ex.Message.Split(":")[1];
             }
 
             return context.Response.WriteAsync(new ErrorDetails()
             {
                 ErrorMessages = errorMessages
-
             }.ToString());
         }
     }

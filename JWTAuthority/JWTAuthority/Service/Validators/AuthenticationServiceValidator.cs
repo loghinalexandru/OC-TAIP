@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using JWTAuthority.DataAccess.Repository;
-using JWTAuthority.Helpers;
 using JWTAuthority.Models;
 
 namespace JWTAuthority.Service.Validators
@@ -17,9 +16,9 @@ namespace JWTAuthority.Service.Validators
 
             RuleFor(model => model.Username)
                 .NotEmpty()
-                .WithMessage("Username can not be null!")
+                .WithMessage("{PropertyName}:Username can not be null!")
                 .Must(BeValidUsername)
-                .WithMessage("Username does not exist!");
+                .WithMessage("{PropertyName}:Username does not exist!");
         }
 
         private bool BeValidUsername(string username)

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using JWTAuthority.Domain;
 using System.Linq;
-using System.Threading.Tasks;
-using JWTAuthority.Domain;
 
 namespace JWTAuthority.DataAccess.Repository
 {
@@ -15,6 +12,12 @@ namespace JWTAuthority.DataAccess.Repository
             _context = context;
         }
 
+        public bool IsAvailableUsername(string username)
+        {
+            return
+                _context.Users.Find(username) == null;
+        }
+
         public void AddUser(User user)
         {
             _context.Add(user);
@@ -24,7 +27,7 @@ namespace JWTAuthority.DataAccess.Repository
 
         public User GetByUsername(string username)
         {
-            return 
+            return
                 _context.Users.SingleOrDefault(user => user.Username == username);
         }
     }

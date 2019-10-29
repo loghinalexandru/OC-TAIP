@@ -19,7 +19,7 @@ namespace JWTAuthority.Helpers
             _settings = settings;
         }
 
-        public String GetToken(User user)
+        public string GetToken(User user)
         {
             var expirationDate = DateTime.Now.Add(_settings.TokenExpiration);
             var credentials = new SigningCredentials(_settings.SecurityKey, _settings.SecurityAlgorithm);

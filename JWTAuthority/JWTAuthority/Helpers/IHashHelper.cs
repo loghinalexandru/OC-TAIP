@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace JWTAuthority.Helpers
+﻿namespace JWTAuthority.Helpers
 {
     public interface IHashHelper
     {
-        public String GetHashAsString(String message);
+        string GetHashAsString(string message);
     }
 }

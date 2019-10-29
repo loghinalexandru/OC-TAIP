@@ -9,12 +9,12 @@ namespace JWTAuthority.Service.Exceptions
 
         }
 
-        public ValidationException(String message): base(message)
+        public ValidationException(string message): base(message)
         {
 
         }
 
-        public ValidationException(String message, Exception innerException) : base(message, innerException)
+        public ValidationException(string message, Exception innerException) : base(message, innerException)
         {
 
         }

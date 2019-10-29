@@ -4,6 +4,6 @@ namespace JWTAuthority.Service
 {
     public interface IRegisterService
     {
-        public void Register(RegisterModel model);
+        void Register(RegisterModel model);
     }
 }
