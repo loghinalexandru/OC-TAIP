@@ -1,38 +1,33 @@
 package com.uaic.gaitauthentication.ui.login;
 
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import android.os.Build;
 import android.util.Patterns;
 
+import com.uaic.gaitauthentication.data.LoginDataSource;
 import com.uaic.gaitauthentication.data.LoginRepository;
 import com.uaic.gaitauthentication.helpers.Result;
-import com.uaic.gaitauthentication.data.model.LoggedInUser;
 import com.uaic.gaitauthentication.R;
-
-import java.util.concurrent.Future;
-
-import okhttp3.Response;
 
 public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private LoginRepository loginRepository;
+    private final MutableLiveData<Result> result;
 
-    LoginViewModel(LoginRepository loginRepository) {
-        this.loginRepository = loginRepository;
+    LoginViewModel() {
+        this.result = new MutableLiveData<>();
+        this.loginRepository = LoginRepository.getInstance(new LoginDataSource(result));
     }
 
     LiveData<LoginFormState> getLoginFormState() {
         return loginFormState;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public Future<Response> login(String username, String password) {
-        return loginRepository.login(username, password);
+    public void login(String username, String password) {
+        loginRepository.login(username, password);
     }
 
     public void loginDataChanged(String username, String password) {
@@ -60,5 +55,9 @@ public class LoginViewModel extends ViewModel {
     // A placeholder password validation check
     private boolean isPasswordValid(String password) {
         return password != null && password.trim().length() >= 8;
+    }
+
+    public LiveData<Result> getResult() {
+        return result;
     }
 }

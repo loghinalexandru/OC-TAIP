@@ -1,43 +1,48 @@
 package com.uaic.gaitauthentication.helpers;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
+
+import androidx.lifecycle.MutableLiveData;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 
-public abstract class AsyncTaskHttpCall extends AsyncTask<Future<Response>, Void, Result> {
+public class AsyncTaskHttpCall extends AsyncTask<Void, Void, Result> {
 
-    protected Activity activity;
+    private final Request request;
+    private final MutableLiveData<Result> liveData;
 
-    public AsyncTaskHttpCall(Activity activity) {
-        this.activity = activity;
+    public AsyncTaskHttpCall(Request request, MutableLiveData<Result> liveData) {
+        this.request = request;
+        this.liveData = liveData;
     }
 
     @Override
-    protected Result doInBackground(Future<Response>... futures) {
+    protected Result doInBackground(Void... voids) {
         try {
-            Response response = futures[0].get();
+            OkHttpClient client = new OkHttpClient();
+            Response response = client.newCall(request).execute();
+
             if (response.isSuccessful()) {
                 return new Result.Success(response.body().string());
             }
 
             return new Result.Error(new Exception(response.body().string()));
 
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return new Result.Error(new Exception("Could not connect to server!"));
+    }
+
+    @Override
+    protected void onPostExecute(Result result) {
+        super.onPostExecute(result);
+        liveData.setValue(result);
     }
 }
 

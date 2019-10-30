@@ -17,11 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.uaic.gaitauthentication.R;
-import com.uaic.gaitauthentication.helpers.AsyncTaskRegister;
-
-import java.util.concurrent.Future;
-
-import okhttp3.Response;
+import com.uaic.gaitauthentication.helpers.Result;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -85,10 +81,20 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
-                Future<Response> future = registerViewModel.register(usernameEditText.getText().toString(), passwordEditText.getText().toString(), emailEditText.getText().toString());
-                new AsyncTaskRegister(RegisterActivity.this).execute(future);
+                registerViewModel.register(usernameEditText.getText().toString(), passwordEditText.getText().toString(), emailEditText.getText().toString());
             }
         });
 
+        registerViewModel.getResult().observe(this, new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result instanceof Result.Success) {
+                    finish();
+                } else {
+                    findViewById(R.id.loading).setVisibility(View.INVISIBLE);
+                    Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }

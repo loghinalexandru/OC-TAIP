@@ -1,15 +1,6 @@
 package com.uaic.gaitauthentication.data;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
-import com.uaic.gaitauthentication.data.model.LoggedInUser;
 import com.uaic.gaitauthentication.data.model.LoginModel;
-
-import java.util.concurrent.Future;
-
-import okhttp3.Response;
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -33,8 +24,7 @@ public class LoginRepository {
         return instance;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public Future<Response> login(String username, String password) {
-        return dataSource.login(new LoginModel(username, password));
+    public void login(String username, String password) {
+        dataSource.login(new LoginModel(username, password));
     }
 }

@@ -1,17 +1,17 @@
 package com.uaic.gaitauthentication.data;
 
-import com.uaic.gaitauthentication.data.model.RegisterModel;
-import java.util.concurrent.Future;
+import androidx.lifecycle.MutableLiveData;
 
-import okhttp3.Response;
+import com.uaic.gaitauthentication.data.model.RegisterModel;
+import com.uaic.gaitauthentication.helpers.Result;
 
 public class RegisterRepository {
 
     private static volatile RegisterRepository instance;
 
-    private RegisterDataSource dataSource;
+    private final RegisterDataSource dataSource;
 
-    private RegisterRepository(RegisterDataSource dataSource){
+    private RegisterRepository(RegisterDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -23,7 +23,7 @@ public class RegisterRepository {
         return instance;
     }
 
-    public Future<Response> register(RegisterModel model){
-       return dataSource.register(model);
+    public void register(RegisterModel model) {
+        dataSource.register(model);
     }
 }

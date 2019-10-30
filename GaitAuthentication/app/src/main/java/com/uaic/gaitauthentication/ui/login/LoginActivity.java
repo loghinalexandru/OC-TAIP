@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -25,8 +26,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.uaic.gaitauthentication.MainActivity;
 import com.uaic.gaitauthentication.R;
-import com.uaic.gaitauthentication.helpers.AsyncTaskLogin;
+import com.uaic.gaitauthentication.helpers.Result;
 import com.uaic.gaitauthentication.ui.register.RegisterActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -87,28 +89,31 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
-                AsyncTaskLogin loginTask = new AsyncTaskLogin(LoginActivity.this);
-                loginTask.execute(loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString()));
-
+                loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
             }
         });
 
-        signupButton.setOnClickListener(new View.OnClickListener(){
+        signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent registerIntent = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(registerIntent);
             }
         });
-    }
 
-    private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-    }
-
-    private void showLoginFailed(@StringRes Integer errorString) {
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+        loginViewModel.getResult().observe(this, new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result instanceof Result.Success) {
+                    Intent mainActivity = new Intent(getApplication(), MainActivity.class);
+                    Toast.makeText(getApplication(), result.toString(), Toast.LENGTH_LONG).show();
+                    startActivity(mainActivity);
+                    finish();
+                } else {
+                    findViewById(R.id.loading).setVisibility(View.INVISIBLE);
+                    Toast.makeText(getApplication(), result.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }
