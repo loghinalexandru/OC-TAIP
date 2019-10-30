@@ -44,13 +44,13 @@ public class RegisterActivity extends AppCompatActivity {
                 }
                 register.setEnabled(registerFormState.isDataValid());
                 if (registerFormState.getUsernameError() != null) {
-                    usernameEditText.setError(getString(registerFormState.getUsernameError()));
+                    usernameEditText.setError(registerFormState.getUsernameError());
                 }
                 if (registerFormState.getPasswordError() != null) {
-                    passwordEditText.setError(getString(registerFormState.getPasswordError()));
+                    passwordEditText.setError(registerFormState.getPasswordError());
                 }
                 if (registerFormState.getEmailError() != null) {
-                    emailEditText.setError(getString(registerFormState.getEmailError()));
+                    emailEditText.setError(registerFormState.getEmailError());
                 }
             }
         });
@@ -81,6 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
+                register.setEnabled(false);
                 registerViewModel.register(usernameEditText.getText().toString(), passwordEditText.getText().toString(), emailEditText.getText().toString());
             }
         });
@@ -92,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                     finish();
                 } else {
                     findViewById(R.id.loading).setVisibility(View.INVISIBLE);
-                    Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
+                    register.setEnabled(true);
                 }
             }
         });

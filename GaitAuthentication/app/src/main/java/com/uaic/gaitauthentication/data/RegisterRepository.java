@@ -1,5 +1,6 @@
 package com.uaic.gaitauthentication.data;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.uaic.gaitauthentication.data.model.RegisterModel;
@@ -10,14 +11,16 @@ public class RegisterRepository {
     private static volatile RegisterRepository instance;
 
     private final RegisterDataSource dataSource;
+    private final MutableLiveData<Result> result;
 
-    private RegisterRepository(RegisterDataSource dataSource) {
-        this.dataSource = dataSource;
+    private RegisterRepository() {
+        this.result = new MutableLiveData<>();
+        this.dataSource = new RegisterDataSource(result);
     }
 
-    public static RegisterRepository getInstance(RegisterDataSource dataSource) {
+    public static RegisterRepository getInstance() {
         if (instance == null) {
-            instance = new RegisterRepository(dataSource);
+            instance = new RegisterRepository();
         }
 
         return instance;
@@ -25,5 +28,9 @@ public class RegisterRepository {
 
     public void register(RegisterModel model) {
         dataSource.register(model);
+    }
+
+    public LiveData<Result> getResult(){
+        return result;
     }
 }

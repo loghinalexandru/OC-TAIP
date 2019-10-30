@@ -1,29 +1,54 @@
 package com.uaic.gaitauthentication.ui.register;
 
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.uaic.gaitauthentication.R;
-import com.uaic.gaitauthentication.data.RegisterDataSource;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.uaic.gaitauthentication.data.RegisterRepository;
 import com.uaic.gaitauthentication.data.model.RegisterModel;
 import com.uaic.gaitauthentication.helpers.Result;
-
-import java.util.concurrent.Future;
-
-import okhttp3.Response;
+import com.uaic.gaitauthentication.helpers.ValidationErrors;
 
 public class RegisterViewModel extends ViewModel {
 
     private RegisterRepository repository;
     private MutableLiveData<RegisterFormState> registerFormState;
-    private MutableLiveData<Result> result;
+    private LiveData<Result> result;
 
-    public RegisterViewModel() {
-        registerFormState = new MutableLiveData<>();
-        result = new MutableLiveData<>();
-        repository = RegisterRepository.getInstance(new RegisterDataSource(result));
+    public RegisterViewModel(RegisterRepository repository) {
+        this.registerFormState = new MutableLiveData<>();
+        this.repository = repository;
+        this.result = repository.getResult();
+
+        result.observeForever(new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                RegisterFormState formState = new RegisterFormState();
+                Gson jsonHelper = new Gson();
+
+                if (result instanceof Result.Error) {
+                    JsonObject errorMessages = jsonHelper.fromJson(((Result.Error) result).getError().getMessage(), JsonObject.class).getAsJsonObject("ErrorMessages");
+
+                    if (errorMessages.has("Email")) {
+                        formState.setEmailError(errorMessages.get("Email").toString());
+                    }
+
+                    if (errorMessages.has("Username")) {
+                        formState.setUsernameError(errorMessages.get("Username").toString());
+                    }
+
+                    if (errorMessages.has("Password")) {
+                        formState.setPasswordError(errorMessages.get("Password").toString());
+                    }
+
+                    registerFormState.setValue(formState);
+                }
+            }
+        });
     }
 
     public void register(String username, String password, String email) {
@@ -38,13 +63,13 @@ public class RegisterViewModel extends ViewModel {
         RegisterFormState formState = new RegisterFormState();
 
         if (isEmailValid(email) == false) {
-            formState.setEmailError(R.string.invalid_email);
+            formState.setEmailError(ValidationErrors.invalidEmail);
         }
         if (isUsernameValid(username) == false) {
-            formState.setUsernameError(R.string.invalid_username);
+            formState.setUsernameError(ValidationErrors.invalidUsername);
         }
         if (isPasswordValid(password) == false) {
-            formState.setPasswordError(R.string.invalid_password);
+            formState.setPasswordError(ValidationErrors.invalidPassowrd);
         }
 
         registerFormState.setValue(formState);

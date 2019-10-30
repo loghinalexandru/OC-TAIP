@@ -4,11 +4,11 @@ import androidx.annotation.Nullable;
 
 public class RegisterFormState {
     @Nullable
-    private Integer emailError;
+    private String emailError;
     @Nullable
-    private Integer usernameError;
+    private String usernameError;
     @Nullable
-    private Integer passwordError;
+    private String passwordError;
     private boolean isDataValid;
 
     RegisterFormState(){
@@ -19,31 +19,31 @@ public class RegisterFormState {
     }
 
     @Nullable
-    Integer getUsernameError() {
+    String getUsernameError() {
         return usernameError;
     }
 
     @Nullable
-    Integer getPasswordError() {
+    String getPasswordError() {
         return passwordError;
     }
 
     @Nullable
-    Integer getEmailError(){
+    String getEmailError(){
         return emailError;
     }
 
-    public void setEmailError(@Nullable Integer emailError) {
+    public void setEmailError(@Nullable String emailError) {
         this.emailError = emailError;
         this.isDataValid = false;
     }
 
-    public void setUsernameError(@Nullable Integer usernameError) {
+    public void setUsernameError(@Nullable String usernameError) {
         this.usernameError = usernameError;
         this.isDataValid = false;
     }
 
-    public void setPasswordError(@Nullable Integer passwordError) {
+    public void setPasswordError(@Nullable String passwordError) {
         this.passwordError = passwordError;
         this.isDataValid = false;
     }

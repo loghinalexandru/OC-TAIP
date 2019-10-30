@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel;
 
 import android.util.Patterns;
 
-import com.uaic.gaitauthentication.data.LoginDataSource;
 import com.uaic.gaitauthentication.data.LoginRepository;
 import com.uaic.gaitauthentication.helpers.Result;
 import com.uaic.gaitauthentication.R;
@@ -15,11 +14,11 @@ public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private LoginRepository loginRepository;
-    private final MutableLiveData<Result> result;
+    private final LiveData<Result> result;
 
-    LoginViewModel() {
-        this.result = new MutableLiveData<>();
-        this.loginRepository = LoginRepository.getInstance(new LoginDataSource(result));
+    LoginViewModel(LoginRepository repository) {
+        loginRepository = repository;
+        result = repository.getResult();
     }
 
     LiveData<LoginFormState> getLoginFormState() {
@@ -40,7 +39,10 @@ public class LoginViewModel extends ViewModel {
         }
     }
 
-    // A placeholder username validation check
+    public LiveData<Result> getResult() {
+        return result;
+    }
+
     private boolean isUserNameValid(String username) {
         if (username == null) {
             return false;
@@ -52,12 +54,7 @@ public class LoginViewModel extends ViewModel {
         }
     }
 
-    // A placeholder password validation check
     private boolean isPasswordValid(String password) {
         return password != null && password.trim().length() >= 8;
-    }
-
-    public LiveData<Result> getResult() {
-        return result;
     }
 }

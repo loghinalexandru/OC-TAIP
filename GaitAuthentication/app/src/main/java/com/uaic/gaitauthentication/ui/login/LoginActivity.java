@@ -89,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
+                loginButton.setEnabled(false);
                 loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
             }
         });
@@ -110,6 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(mainActivity);
                     finish();
                 } else {
+                    loginButton.setEnabled(true);
                     findViewById(R.id.loading).setVisibility(View.INVISIBLE);
                     Toast.makeText(getApplication(), result.toString(), Toast.LENGTH_LONG).show();
                 }
