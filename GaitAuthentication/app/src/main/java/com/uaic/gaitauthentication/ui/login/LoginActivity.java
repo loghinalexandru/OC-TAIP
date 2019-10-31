@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -16,20 +17,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uaic.gaitauthentication.MainActivity;
 import com.uaic.gaitauthentication.R;
 import com.uaic.gaitauthentication.helpers.Result;
 import com.uaic.gaitauthentication.ui.register.RegisterActivity;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -39,6 +38,9 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        checkAuthentication();
+
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
@@ -67,12 +69,10 @@ public class LoginActivity extends AppCompatActivity {
         TextWatcher afterTextChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
             }
 
             @Override
@@ -81,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                         passwordEditText.getText().toString());
             }
         };
+        
         usernameEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
 
@@ -107,7 +108,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onChanged(Result result) {
                 if (result instanceof Result.Success) {
                     Intent mainActivity = new Intent(getApplication(), MainActivity.class);
-                    Toast.makeText(getApplication(), result.toString(), Toast.LENGTH_LONG).show();
+
+                    storeToken(((Result.Success) result).getData().toString());
+
                     startActivity(mainActivity);
                     finish();
                 } else {
@@ -117,5 +120,22 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void storeToken(String token) {
+        SharedPreferences.Editor preferences = getDefaultSharedPreferences(getApplicationContext()).edit();
+        preferences.putString("token", token);
+        preferences.commit();
+    }
+
+    private void checkAuthentication() {
+        SharedPreferences preferences = getDefaultSharedPreferences(getApplicationContext());
+        String token = preferences.getString("token", null);
+        //TODO: Check token expiration
+        if (token != null) {
+            Intent mainActivity = new Intent(getApplication(), MainActivity.class);
+            startActivity(mainActivity);
+            finish();
+        }
     }
 }

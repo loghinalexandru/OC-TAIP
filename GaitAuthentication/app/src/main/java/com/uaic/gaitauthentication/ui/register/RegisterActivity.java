@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.uaic.gaitauthentication.R;
 import com.uaic.gaitauthentication.helpers.Result;

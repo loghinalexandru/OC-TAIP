@@ -15,40 +15,47 @@ import com.uaic.gaitauthentication.helpers.ValidationErrors;
 
 public class RegisterViewModel extends ViewModel {
 
-    private RegisterRepository repository;
-    private MutableLiveData<RegisterFormState> registerFormState;
-    private LiveData<Result> result;
+    private final RegisterRepository repository;
+    private final MutableLiveData<RegisterFormState> registerFormState;
+    private final LiveData<Result> result;
+    private final Gson jsonHelper;
 
     public RegisterViewModel(RegisterRepository repository) {
         this.registerFormState = new MutableLiveData<>();
+        this.jsonHelper = new Gson();
         this.repository = repository;
         this.result = repository.getResult();
 
         result.observeForever(new Observer<Result>() {
             @Override
             public void onChanged(Result result) {
-                RegisterFormState formState = new RegisterFormState();
-                Gson jsonHelper = new Gson();
-
-                if (result instanceof Result.Error) {
-                    JsonObject errorMessages = jsonHelper.fromJson(((Result.Error) result).getError().getMessage(), JsonObject.class).getAsJsonObject("ErrorMessages");
-
-                    if (errorMessages.has("Email")) {
-                        formState.setEmailError(errorMessages.get("Email").toString());
-                    }
-
-                    if (errorMessages.has("Username")) {
-                        formState.setUsernameError(errorMessages.get("Username").toString());
-                    }
-
-                    if (errorMessages.has("Password")) {
-                        formState.setPasswordError(errorMessages.get("Password").toString());
-                    }
-
-                    registerFormState.setValue(formState);
-                }
+                handleResult(result);
             }
         });
+    }
+
+    private void handleResult(Result result) {
+        RegisterFormState formState = new RegisterFormState();
+
+        if (result instanceof Result.Error) {
+            JsonObject errorMessages = jsonHelper
+                    .fromJson(((Result.Error) result).getError().getMessage(), JsonObject.class)
+                    .getAsJsonObject("ErrorMessages");
+
+            if (errorMessages.has("Email")) {
+                formState.setEmailError(errorMessages.get("Email").toString().replaceAll("\"", ""));
+            }
+
+            if (errorMessages.has("Username")) {
+                formState.setUsernameError(errorMessages.get("Username").toString().replaceAll("\"", ""));
+            }
+
+            if (errorMessages.has("Password")) {
+                formState.setPasswordError(errorMessages.get("Password").toString().replaceAll("\"", ""));
+            }
+
+            registerFormState.setValue(formState);
+        }
     }
 
     public void register(String username, String password, String email) {

@@ -1,12 +1,14 @@
 package com.uaic.gaitauthentication.ui.sensors;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -16,10 +18,13 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.uaic.gaitauthentication.R;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 public class SensorsFragment extends Fragment {
 
     private SensorsViewModel sensorsViewModel;
     private SensorManager sensorManager;
+    private String token;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -33,6 +38,12 @@ public class SensorsFragment extends Fragment {
         final TextView yAxisAccelerometer = root.findViewById(R.id.accelerometer_y);
         final TextView zAxisAccelerometer = root.findViewById(R.id.accelerometer_z);
         final TextView stepCounter = root.findViewById(R.id.step_counter_value);
+
+        try {
+            setTokenFromPreferences();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         sensorsViewModel.getText().observe(this, new Observer<String>() {
             @Override
@@ -82,5 +93,16 @@ public class SensorsFragment extends Fragment {
     public void onPause() {
         super.onPause();
         sensorsViewModel.detachSensor();
+    }
+
+    private void setTokenFromPreferences() throws Exception {
+        SharedPreferences preferences = getDefaultSharedPreferences(getContext());
+        token = preferences.getString("token", null);
+
+        Toast.makeText(getContext(), token, Toast.LENGTH_LONG).show();
+
+        if (token == null) {
+            throw new Exception("Token not set!");
+        }
     }
 }
