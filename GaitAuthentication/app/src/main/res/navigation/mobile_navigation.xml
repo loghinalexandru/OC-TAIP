@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.uaic.gaitauthentication.ui.gallery.GalleryFragment"
+        android:name="com.uaic.gaitauthentication.ui.profiles.ProfilesFragment"
         android:label="@string/menu_profiles"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_profiles" />
 
     <fragment
         android:id="@+id/nav_slideshow"
