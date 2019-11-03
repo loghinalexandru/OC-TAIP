@@ -6,21 +6,25 @@ import matplotlib.pyplot as plt
 
 def plot_subjects_info(path: str, save_to_dir: str, show_plot=False):
     dataframe = pandas.read_csv(path)
+    colors = ["purple", "yellow", "green", "orange"]
+    index = 0
     # print(dataframe)
     for column in dataframe.columns:
         if "code" in column:
             continue
         title = "Subject's " + column
         if "gender" in column:
-            plt.hist(dataframe[column].replace([1, 0], ["Male", "Female"]))
+            plt.hist(dataframe[column].replace([1, 0], ["Male", "Female"]), color=colors[index % 4])
         else:
-            plt.hist(dataframe[column])
+            plt.hist(dataframe[column], color=colors[index % 4])
         plt.title(title)
         plt.ylabel("Number of appearances")
         plt.xlabel(column.title())
         plt.savefig(os.path.join(save_to_dir, title+".png"))
         if show_plot:
             plt.show()
+        plt.close()
+        index += 1
     return
 
 
