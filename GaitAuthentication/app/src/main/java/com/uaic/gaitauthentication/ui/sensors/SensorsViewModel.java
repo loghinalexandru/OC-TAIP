@@ -5,7 +5,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
+import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -89,7 +91,7 @@ public class SensorsViewModel extends ViewModel implements SensorEventListener {
             stepConsecutiveCounter = 0;
         }
 
-        if (event.sensor == accelerometer && stepConsecutiveCounter > stepsThreshold) {
+        if (event.sensor == accelerometer) {
             xAxis.postValue(Float.toString(event.values[0]));
             yAxis.postValue(Float.toString(event.values[1]));
             zAxis.postValue(Float.toString(event.values[2]));

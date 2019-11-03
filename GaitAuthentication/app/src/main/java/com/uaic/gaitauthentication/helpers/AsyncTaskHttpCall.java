@@ -1,6 +1,7 @@
 package com.uaic.gaitauthentication.helpers;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -42,6 +43,7 @@ public class AsyncTaskHttpCall extends AsyncTask<Void, Void, Result> {
     @Override
     protected void onPostExecute(Result result) {
         super.onPostExecute(result);
+        Log.d("RESULT", result.toString());
         liveData.setValue(result);
     }
 }
