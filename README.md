@@ -1,5 +1,7 @@
 # GaitAuthentication
 Repository that contains the source code developed in Advanced Software Engineering Techniques subject
+# USAGE DETAILS
+- HUWAEI PHONES: DISABLE "MANAGE AUTOMATICALLY" FOR THE GAITAUTHENTICATION APP FROM POWER USAGE DETAILS INSIDE THE APPS MENU
 # Checklist
 - [x] Json Web Token Server
 - [ ] User Data Server

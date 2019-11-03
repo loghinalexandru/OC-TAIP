@@ -60,7 +60,7 @@ public class SensorService extends Service implements SensorEventListener {
         super.onCreate();
 
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "SensorService::WakeLock");
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SensorService::WakeLock");
 
         try {
             sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);

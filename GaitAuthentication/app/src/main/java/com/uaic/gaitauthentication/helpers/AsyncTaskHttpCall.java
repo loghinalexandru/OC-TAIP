@@ -43,7 +43,6 @@ public class AsyncTaskHttpCall extends AsyncTask<Void, Void, Result> {
     @Override
     protected void onPostExecute(Result result) {
         super.onPostExecute(result);
-        Log.d("RESULT", result.toString());
         liveData.setValue(result);
     }
 }
