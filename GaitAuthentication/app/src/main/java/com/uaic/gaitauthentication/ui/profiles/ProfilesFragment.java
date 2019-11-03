@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,7 +24,6 @@ import com.uaic.gaitauthentication.helpers.AdapterProfile;
 import com.uaic.gaitauthentication.helpers.Profile;
 import com.uaic.gaitauthentication.ui.services.SensorService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProfilesFragment extends Fragment {
@@ -64,7 +62,7 @@ public class ProfilesFragment extends Fragment {
         return root;
     }
 
-    private void showProfileDialog(){
+    private void showProfileDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(getString(R.string.new_profile));
 
@@ -89,12 +87,16 @@ public class ProfilesFragment extends Fragment {
         builder.show();
     }
 
-    private void addProfileEntry(String profileName){
+    private void addProfileEntry(String profileName) {
         List<Profile> profiles = profilesViewModel.getProfileList().getValue();
         profiles.add(new Profile(profileName));
         profilesViewModel.getProfileList().setValue(profiles);
 
         Intent intent = new Intent(getContext(), SensorService.class);
+        Bundle serviceData = new Bundle();
+        serviceData.putString("profileName", profileName);
+        intent.putExtras(serviceData);
+
         getContext().startService(intent);
     }
 }
