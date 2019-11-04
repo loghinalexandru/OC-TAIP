@@ -9,6 +9,7 @@ Repository that contains the source code developed in Advanced Software Engineer
 - [ ] Android Client
 - [ ] Python Script Runner Server
 - [ ] Classification Model And Algorithm
+- [ ] Feature extraction
 ***
 # Requirements Analasys
 This project intends to offer a third-layer protection against mobile devices theft using the data registered when the owner of the device walks. We desire to achieve this by creating a small android app, all open source in order to make avaible this technology to any user with an android device running Lollipop 5.0 and higher.
