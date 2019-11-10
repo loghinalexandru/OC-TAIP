@@ -2,7 +2,6 @@ package com.uaic.gaitauthentication.ui.profiles;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -13,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -20,9 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.uaic.gaitauthentication.R;
-import com.uaic.gaitauthentication.helpers.AdapterProfile;
 import com.uaic.gaitauthentication.helpers.Profile;
-import com.uaic.gaitauthentication.ui.services.SensorService;
 
 import java.util.List;
 
@@ -30,6 +28,7 @@ public class ProfilesFragment extends Fragment {
 
     private ProfilesViewModel profilesViewModel;
     private ListView profilesList;
+    private EditText dialogInput;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -66,15 +65,15 @@ public class ProfilesFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(getString(R.string.new_profile));
 
-        final EditText input = new EditText(getContext());
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        dialogInput = new EditText(getContext());
+        dialogInput.setInputType(InputType.TYPE_CLASS_TEXT);
 
-        builder.setView(input);
+        builder.setView(dialogInput);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                addProfileEntry(input.getText().toString());
+                addProfileEntry(dialogInput.getText().toString());
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -89,14 +88,22 @@ public class ProfilesFragment extends Fragment {
 
     private void addProfileEntry(String profileName) {
         List<Profile> profiles = profilesViewModel.getProfileList().getValue();
-        profiles.add(new Profile(profileName));
-        profilesViewModel.getProfileList().setValue(profiles);
+        if (isUnique(profileName, profiles)) {
+            profiles.add(new Profile(profileName));
+            profilesViewModel.getProfileList().setValue(profiles);
+        } else {
+//            dialogInput.setError("Duplicate profile name!");
+            Toast.makeText(getContext(), "Duplicate profile name!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-        Intent intent = new Intent(getContext(), SensorService.class);
-        Bundle serviceData = new Bundle();
-        serviceData.putString("profileName", profileName);
-        intent.putExtras(serviceData);
+    private boolean isUnique(String profileName, List<Profile> profiles) {
+        for (int i = 0; i < profiles.size(); ++i) {
+            if (profiles.get(i).profileName.equals(profileName)) {
+                return false;
+            }
+        }
 
-        getContext().startService(intent);
+        return true;
     }
 }

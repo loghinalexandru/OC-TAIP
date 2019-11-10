@@ -25,9 +25,10 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.Observer;
 
-import com.uaic.gaitauthentication.MainActivity;
+import com.uaic.gaitauthentication.ui.MainActivity;
 import com.uaic.gaitauthentication.R;
 import com.uaic.gaitauthentication.data.UploadRepository;
+import com.uaic.gaitauthentication.helpers.Constants;
 import com.uaic.gaitauthentication.helpers.Result;
 
 import java.io.File;
@@ -80,6 +81,11 @@ public class SensorService extends Service implements SensorEventListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        if (intent.getAction().equals(Constants.STOP_SERVICE)) {
+            stopForeground(true);
+            stopSelf();
+        }
+
         Bundle serviceData = intent.getExtras();
         profileName = serviceData.getString("profileName");
 
@@ -97,14 +103,14 @@ public class SensorService extends Service implements SensorEventListener {
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Creating Profile")
-                .setContentText("Please do not close the app")
-                .setSmallIcon(R.drawable.ic_menu_camera)
+                .setContentText("Please do not close this notification")
+                .setSmallIcon(R.drawable.ic_menu_gallery)
                 .setContentIntent(pendingIntent)
                 .build();
 
         startForeground(101, notification);
 
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     @Override
@@ -123,7 +129,7 @@ public class SensorService extends Service implements SensorEventListener {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createNotificationChannel() {
 
-        String channelName = "My Background Service";
+        String channelName = "SensorService";
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
         channel.setLightColor(Color.BLUE);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
@@ -146,6 +152,7 @@ public class SensorService extends Service implements SensorEventListener {
         }
 
         if (event.sensor == stepDetector) {
+            Log.d("MOVING" , "MOVING");
             stepConsecutiveCounter += 1;
             lastStepTimeStamp = java.lang.System.currentTimeMillis();
             if (!isMoving && stepConsecutiveCounter > stepsThreshold) {
