@@ -55,5 +55,15 @@ namespace AccelerometerStorage.WebApi
                 ? (IActionResult)BadRequest(Result.Failure(result.Error).ToInternalResponse())
                 : CreatedAtAction(null, result.ToInternalResponse());
         }
+
+        [HttpGet]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> Get([FromQuery] UserFilterModel model)
+        {
+            var username = model == null ? "" : model.Username;
+            var stream = await storageService.GetData(new GetFilteredDataQuery(username));
+
+            return File(stream.ToArray(), "application/zip", "Data.zip");
+        }
     }
 }
