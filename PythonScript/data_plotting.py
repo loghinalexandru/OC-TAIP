@@ -1,8 +1,8 @@
 import os
 import numpy
 import pandas
-import scipy.signal as signal
 import matplotlib.pyplot as plt
+from PythonScript import feature_extraction as fe
 
 
 def plot_subjects_info(path: str, save_to_dir: str, show_plot=False):
@@ -29,22 +29,6 @@ def plot_subjects_info(path: str, save_to_dir: str, show_plot=False):
     return
 
 
-def peaks_count_distance(matrix: list):
-    temp = numpy.array(matrix)
-    peaks_x, _ = signal.find_peaks(temp[:, 0])
-    peaks_y, _ = signal.find_peaks(temp[:, 1])
-    peaks_z, _ = signal.find_peaks(temp[:, 2])
-    return [len(peaks_x), len(peaks_y), len(peaks_z)], [peaks_x.mean(), peaks_y.mean(), peaks_z.mean()]
-
-
-def compute_magnitude(matrix: list, window_interval: int):
-    result = numpy.power(matrix, 2)
-    result = numpy.sum(result, axis=1)
-    result = numpy.sqrt(result)
-    result = numpy.sum(result) / window_interval
-    return result
-
-
 def process_data_walking(dataframe: pandas.DataFrame, window_interval=100):
     frequency_domain = numpy.fft.fftn(
         [dataframe['userAcceleration.x'], dataframe['userAcceleration.y'], dataframe['userAcceleration.z']]).T
@@ -62,13 +46,13 @@ def process_data_walking(dataframe: pandas.DataFrame, window_interval=100):
         raw_slice = raw_slice[raw_slice.columns[-3:]]
         raw_means.append(raw_slice.mean().values.tolist())
         raw_meadians.append(raw_slice.median().values.tolist())
-        raw_magnitudes.append(compute_magnitude(raw_slice.values.tolist(), window_interval))
-        raw_average_peaks.append(peaks_count_distance(raw_slice.values.tolist())[0])
-        raw_distance_peaks.append(peaks_count_distance(raw_slice.values.tolist())[1])
+        raw_magnitudes.append(fe.get_magnitudes(raw_slice.values.tolist(), window_interval))
+        raw_average_peaks.append(fe.peaks_count_distance(raw_slice.values.tolist())[0])
+        raw_distance_peaks.append(fe.peaks_count_distance(raw_slice.values.tolist())[1])
         fft_slice = frequency_domain[index:index + 100]
         fft_means.append(list(numpy.mean(fft_slice, axis=0)))
         fft_medians.append(list(numpy.median(fft_slice, axis=0)))
-        fft_magnitudes.append(compute_magnitude(fft_slice, window_interval))
+        fft_magnitudes.append(fe.get_magnitudes(fft_slice, window_interval))
     raw_means = numpy.array(raw_means)
     raw_meadians = numpy.array(raw_meadians)
     raw_magnitudes = numpy.array(raw_magnitudes)

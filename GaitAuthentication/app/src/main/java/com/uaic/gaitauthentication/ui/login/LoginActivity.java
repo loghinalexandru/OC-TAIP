@@ -1,24 +1,15 @@
 package com.uaic.gaitauthentication.ui.login;
 
-import android.Manifest;
-import android.app.Activity;
-
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
@@ -29,7 +20,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.uaic.gaitauthentication.MainActivity;
+import com.uaic.gaitauthentication.ui.MainActivity;
 import com.uaic.gaitauthentication.R;
 import com.uaic.gaitauthentication.helpers.Result;
 import com.uaic.gaitauthentication.ui.register.RegisterActivity;
