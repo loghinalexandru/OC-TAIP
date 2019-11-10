@@ -34,5 +34,10 @@ namespace AccelerometerStorage.Domain
             return Result.FirstFailureOrSuccess(filenameResult, userResult)
                 .Map(() => new DataFile(filename, user));
         }
+
+        public static class Expressions
+        {
+            public static string User => nameof(User);
+        }
     }
 }

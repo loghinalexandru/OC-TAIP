@@ -2,6 +2,8 @@
 # Created by https://www.gitignore.io/api/pydev,linux,python,pycharm,windows,android,dotnetcore,visualstudio
 # Edit at https://www.gitignore.io/?templates=pydev,linux,python,pycharm,windows,android,dotnetcore,visualstudio
 
+AccelerometerStorage/AccelerometerStorage/uploads
+
 ### Android ###
 # Built application files
 *.apk

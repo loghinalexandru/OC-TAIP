@@ -20,16 +20,25 @@ namespace AccelerometerStorage.Business
             this.writeRepository = writeRepository;
         }
 
-        public async Task<Result> AddUser(AddUserCommand command)
+        public async Task<Result<User>> AddUser(AddUserCommand command)
         {
             EnsureArg.IsNotNull(command);
-            
+
             var maybeUser = await readRepository.FindOne(u => u.Username == command.Username);
 
             return maybeUser.ToInverseResult("User already exists")
                 .Map(() => User.Create(command.Username))
-                .Map(u => writeRepository.Create(u.Value))
-                .Map(_ => writeRepository.Commit());
+                .Map(u =>
+                {
+                    writeRepository.Create(u.Value);
+                    writeRepository.Commit();
+                    return u.Value;
+                });
+        }
+
+        public async Task<Maybe<User>> GetByUsername(string username)
+        {
+            return await readRepository.FindOne(u => u.Username == username);
         }
     }
 }
