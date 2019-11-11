@@ -1,17 +1,9 @@
 package com.uaic.gaitauthentication.ui.login;
 
-import androidx.annotation.RequiresApi;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -20,9 +12,16 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.uaic.gaitauthentication.ui.MainActivity;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.auth0.android.jwt.JWT;
 import com.uaic.gaitauthentication.R;
 import com.uaic.gaitauthentication.helpers.Result;
+import com.uaic.gaitauthentication.ui.MainActivity;
 import com.uaic.gaitauthentication.ui.register.RegisterActivity;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
@@ -78,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                         passwordEditText.getText().toString());
             }
         };
-        
+
         usernameEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
 
@@ -128,11 +127,17 @@ public class LoginActivity extends AppCompatActivity {
     private void checkAuthentication() {
         SharedPreferences preferences = getDefaultSharedPreferences(getApplicationContext());
         String token = preferences.getString("token", null);
-        //TODO: Check token expiration
-        if (token != null) {
+
+        if (token != null && !isExpired(token)) {
             Intent mainActivity = new Intent(getApplication(), MainActivity.class);
             startActivity(mainActivity);
             finish();
         }
+    }
+
+    public boolean isExpired(String token) {
+        JWT jwt = new JWT(token);
+
+        return jwt.isExpired(0);
     }
 }

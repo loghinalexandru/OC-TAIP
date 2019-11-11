@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.uaic.gaitauthentication.ui.SettingsFragment;
+import com.uaic.gaitauthentication.ui.login.LoginActivity;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -42,4 +44,6 @@ public class ExampleUnitTest {
         Mockito.verify(editor).clear();
         Mockito.verify(editor).commit();
     }
+
+
 }
