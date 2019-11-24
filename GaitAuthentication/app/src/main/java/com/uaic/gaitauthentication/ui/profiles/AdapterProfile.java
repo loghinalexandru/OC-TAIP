@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -68,6 +67,8 @@ public class AdapterProfile extends ArrayAdapter<Profile> {
             holder.toggled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    buttonView.setChecked(isChecked);
+
                     if (isChecked) {
                         Bundle serviceData = new Bundle();
                         serviceData.putString("profileName", holder.profileName.getText().toString());

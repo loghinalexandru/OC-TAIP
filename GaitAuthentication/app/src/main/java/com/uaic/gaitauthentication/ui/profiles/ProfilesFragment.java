@@ -3,7 +3,9 @@ package com.uaic.gaitauthentication.ui.profiles;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -63,10 +64,31 @@ public class ProfilesFragment extends Fragment {
 
     private void showProfileDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                List<Profile> profiles = profilesViewModel.getProfileList().getValue();
+                if(!isUnique(s.toString(), profiles)){
+                    dialogInput.setError("Duplicate profile name!");
+                }
+            }
+        };
+
         builder.setTitle(getString(R.string.new_profile));
 
         dialogInput = new EditText(getContext());
         dialogInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        dialogInput.addTextChangedListener(textWatcher);
 
         builder.setView(dialogInput);
 
@@ -92,8 +114,7 @@ public class ProfilesFragment extends Fragment {
             profiles.add(new Profile(profileName));
             profilesViewModel.getProfileList().setValue(profiles);
         } else {
-//            dialogInput.setError("Duplicate profile name!");
-            Toast.makeText(getContext(), "Duplicate profile name!", Toast.LENGTH_SHORT).show();
+            dialogInput.setError("Duplicate profile name!");
         }
     }
 

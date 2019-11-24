@@ -152,7 +152,6 @@ public class SensorService extends Service implements SensorEventListener {
         }
 
         if (event.sensor == stepDetector) {
-            Log.d("MOVING" , "MOVING");
             stepConsecutiveCounter += 1;
             lastStepTimeStamp = java.lang.System.currentTimeMillis();
             if (!isMoving && stepConsecutiveCounter > stepsThreshold) {

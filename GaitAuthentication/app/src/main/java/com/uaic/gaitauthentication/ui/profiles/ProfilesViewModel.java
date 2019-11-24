@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.uaic.gaitauthentication.helpers.Profile;
-import com.uaic.gaitauthentication.ui.services.SensorService;
 
 import java.util.ArrayList;
 import java.util.List;
