@@ -5,7 +5,7 @@ public class Constants {
     public static final String registerEndpoint = authorityBaseUrl + "/Authority/register";
     public static final String loginEndpoint = authorityBaseUrl + "/Authority/token";
 
-    public static final String storageServerBaseUrl = "http://09842520.ngrok.io";
+    public static final String storageServerBaseUrl = "http://d2a21496.ngrok.io";
     public static final String uploadEndpoint = storageServerBaseUrl + "/api/storage/upload";
     public static final String getDataEndpoint = storageServerBaseUrl + "/api/storage/user";
 
