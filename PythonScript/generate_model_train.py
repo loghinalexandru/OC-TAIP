@@ -12,13 +12,16 @@ PROCESSED_DATA_DIR = r"processed_data"
 
 
 class Model:
-    def __init__(self, layer_sizes: list, input_size: int):
+    def __init__(self, layer_sizes: list, input_size: int, batch_size=32, path_load=None):
         self.model = Sequential()
         self.model.add(Dense(layer_sizes[0], input_shape=(input_size,), activation='relu'))
         self.model.add(Dropout(0.5))
         self.model.add(Dense(layer_sizes[1], activation='relu'))
         self.model.add(Dropout(0.5))
         self.model.add(Dense(layer_sizes[2], activation='softmax'))
+        self.batch_size = batch_size
+        if path_load:
+            self.model.load_weights(path_load)
         return
 
     def compile(self):
@@ -30,6 +33,10 @@ class Model:
         self.model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, shuffle=True,
                        validation_data=(x_validation, y_validation))
         return
+
+    def predict(self, to_predict: numpy.array):
+        y_predicted = self.model.predict(to_predict, batch_size=self.batch_size)
+        return y_predicted
 
     def save(self, path: str):
         self.model.save(filepath=path)
