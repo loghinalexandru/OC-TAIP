@@ -37,12 +37,14 @@ namespace AccelerometerStorage.Business
             EnsureArg.IsNotNull(command);
 
             var userResult = await userService.GetByUsername(command.Username)
-                .ToResult("User not found")
-                .OnFailureCompensate(
-                  () => userService.AddUser(new AddUserCommand(command.Username)));
+                .ToResult("User not found");
+            userResult = await userResult.OnFailureCompensate(
+                  () => command.FileType == FileType.Input
+                            ? userService.AddUser(new AddUserCommand(command.Username))
+                            : Task.FromResult(userResult));
 
             return userResult
-                .Map(u => DataFile.Create(command.Filename, u))
+                .Map(u => DataFile.Create(command.Filename, u, command.FileType))
                 .Map(df =>
                 {
                     var saveFileCommand = new SaveFileCommand(command.ContentStream, command.Filename, command.Username, df.Value.Id);
@@ -62,6 +64,7 @@ namespace AccelerometerStorage.Business
                 : await dataFileReadRepository.Find(df => df.User.Username == query.Username);
 
             var files = dataFiles
+                .Where(df => df.FileType == query.FileType)
                 .Select(df => fileStorageService.GetFileInfo(
                     new GetFileQuery(df.User.Username, df.Id)))
                 .Where(dfr => dfr.IsSuccess)

@@ -1,4 +1,5 @@
-﻿using EnsureThat;
+﻿using AccelerometerStorage.Domain;
+using EnsureThat;
 
 namespace AccelerometerStorage.Business
 {
@@ -6,9 +7,12 @@ namespace AccelerometerStorage.Business
     {
         public string Username { get; }
 
-        public GetFilteredDataQuery(string username)
+        public FileType FileType { get; }
+
+        public GetFilteredDataQuery(string username, FileType fileType)
         {
             Username = username;
+            FileType = fileType;
         }
     }
 }

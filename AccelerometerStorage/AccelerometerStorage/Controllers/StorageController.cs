@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AccelerometerStorage.Business;
+using AccelerometerStorage.Domain;
 using AccelerometerStorage.WebApi.Extensions;
 using CSharpFunctionalExtensions;
 using EnsureThat;
@@ -32,7 +33,7 @@ namespace AccelerometerStorage.WebApi
         {
             var file = data.CsvFile;
             var username = HttpContext.ExtractUsername();
-            var command = new AddDataCommand(username, file.FileName, file.OpenReadStream());
+            var command = new AddDataCommand(username, file.FileName, file.OpenReadStream(), FileType.Input);
 
             var result = await storageService.AddData(command);
 
@@ -61,9 +62,35 @@ namespace AccelerometerStorage.WebApi
         public async Task<IActionResult> Get([FromQuery] UserFilterModel model)
         {
             var username = model == null ? "" : model.Username;
-            var stream = await storageService.GetData(new GetFilteredDataQuery(username));
+            var stream = await storageService.GetData(new GetFilteredDataQuery(username, FileType.Input));
 
             return File(stream.ToArray(), "application/zip", "Data.zip");
+        }
+
+        [HttpPost("models/{username}")]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> StoreModel([FromRoute] string username, [FromForm] ModelModel model)
+        {
+            var file = model.ModelFile;
+            var command = new AddDataCommand(username, file.FileName, file.OpenReadStream(), FileType.Model);
+
+            var result = await storageService.AddData(command);
+
+            return result.IsFailure
+                ? (IActionResult)BadRequest(Result.Failure(result.Error).ToInternalResponse())
+                : CreatedAtAction(null, result.ToInternalResponse());
+        }
+
+        [HttpGet("models")]
+        [Authorize]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetModel()
+        {
+            var username = HttpContext.ExtractUsername();
+            var stream = await storageService.GetData(new GetFilteredDataQuery(username, FileType.Model));
+
+            return File(stream.ToArray(), "application/zip", "Model.zip");
         }
     }
 }

@@ -6,7 +6,7 @@ namespace AccelerometerStorage.Tests.Common
     {
         public static DataFile GetDataFile(User user)
         {
-            return DataFile.Create("CsvExample.csv", user).Value;
+            return DataFile.Create("CsvExample.csv", user, FileType.Input).Value;
         }
     }
 }

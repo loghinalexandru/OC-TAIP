@@ -103,9 +103,9 @@ namespace AccelerometerStorage.Business.Tests
         }
 
         private AddDataCommand GetAddDataCommand()
-            => new AddDataCommand("stefan", "CsvExample.csv", new MemoryStream());
+            => new AddDataCommand("stefan", "CsvExample.csv", new MemoryStream(), FileType.Input);
 
         private GetFilteredDataQuery GetGetFilteredDataQuery()
-            => new GetFilteredDataQuery("stefan");
+            => new GetFilteredDataQuery("stefan", FileType.Input);
     }
 }
