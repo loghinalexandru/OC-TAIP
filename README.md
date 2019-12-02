@@ -5,11 +5,11 @@ Repository that contains the source code developed in Advanced Software Engineer
 # Checklist
 - [x] Json Web Token Server
 - [ ] User Data Server
-- [ ] Android Accelerometer Data Collection Server
-- [ ] Android Client
-- [ ] Python Script Runner Server
+- [x] Android Accelerometer Data Collection Server
+- [x] Android Client
+- [x] Python Script Runner Server
 - [ ] Classification Model and Algorithm
-- [ ] Feature Extraction
+- [x] Feature Extraction
 ***
 # Requirements Analysis
 This project intends to offer a third-layer protection against mobile devices theft using the data registered when the owner of the device walks. We desire to achieve this by creating a small android app, all open source in order to make avaible this technology to any user with an android device running Lollipop 5.0 and higher.
