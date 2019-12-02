@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Anotar.NLog;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -24,10 +25,12 @@ namespace JWTAuthority.Service.Exceptions
             catch (AggregateException ex)
             {
                 await HandleExceptionAsync(httpContext, ex);
+                LogTo.Debug(ex.Message);
             }
             catch (Exception ex)
             {
                 await httpContext.Response.WriteAsync(ex.Message);
+                LogTo.Debug(ex.Message);
             }
         }
 
