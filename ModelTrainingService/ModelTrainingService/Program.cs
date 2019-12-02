@@ -17,6 +17,7 @@ namespace ModelTrainingService
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
                 {
                     var configuration = hostContext.Configuration;
