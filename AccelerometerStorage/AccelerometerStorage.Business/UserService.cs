@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AccelerometerStorage.Common;
 using AccelerometerStorage.Domain;
 using CSharpFunctionalExtensions;
@@ -39,6 +41,17 @@ namespace AccelerometerStorage.Business
         public async Task<Maybe<User>> GetByUsername(string username)
         {
             return await readRepository.FindOne(u => u.Username == username);
+        }
+
+        public async Task<IEnumerable<UserDto>> Get()
+        {
+            var users = await readRepository.GetAll();
+
+            return users.Select(u => new UserDto
+            {
+                Id = u.Id,
+                Username = u.Username
+            });
         }
     }
 }
