@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using AccelerometerStorage.Business;
+using AccelerometerStorage.Domain;
 using CSharpFunctionalExtensions;
 using EnsureThat;
 
@@ -35,13 +36,14 @@ namespace AccelerometerStorage.Infrastructure
         {
             var dirpath = Path.Combine(settings.FileStorageRootPath, query.Username);
             var filepath = Path.Combine(dirpath, query.DataFileId.ToString());
+            var extension = query.FileType == FileType.Input ? ".csv" : ".h5";
 
             var result = Result.SuccessIf(
                 Directory.Exists(dirpath) && File.Exists(filepath),
                 "Invalid file path")
                 .Map(() => new Business.FileInfo()
                 {
-                    Filename = query.Username + "\\" + query.DataFileId.ToString(),
+                    Filename = query.DataFileId.ToString() + "_" + query.Username + extension,
                     Filepath = filepath
                 });
 

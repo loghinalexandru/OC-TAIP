@@ -66,7 +66,7 @@ namespace AccelerometerStorage.Business
             var files = dataFiles
                 .Where(df => df.FileType == query.FileType)
                 .Select(df => fileStorageService.GetFileInfo(
-                    new GetFileQuery(df.User.Username, df.Id)))
+                    new GetFileQuery(df.User.Username, df.Id, query.FileType)))
                 .Where(dfr => dfr.IsSuccess)
                 .Select(dfr => dfr.Value);
 
