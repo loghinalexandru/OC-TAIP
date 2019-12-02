@@ -14,11 +14,11 @@ namespace JWTAuthority.Service.Validators
 
             CascadeMode = CascadeMode.StopOnFirstFailure;
 
-            RuleFor(model => model.Username)
+/*            RuleFor(model => model.Username)
                 .NotEmpty()
                 .WithMessage("{PropertyName}:Username can not be null!")
                 .Must(BeValidUsername)
-                .WithMessage("{PropertyName}:Username does not exist!");
+                .WithMessage("{PropertyName}:Username does not exist!");*/
         }
 
         private bool BeValidUsername(string username)

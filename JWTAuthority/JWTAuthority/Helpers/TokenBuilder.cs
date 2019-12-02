@@ -1,4 +1,5 @@
-﻿using JWTAuthority.API.Models;
+﻿using JetBrains.Annotations;
+using JWTAuthority.API.Models;
 using JWTAuthority.Domain;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -19,6 +20,7 @@ namespace JWTAuthority.Helpers
             _settings = settings;
         }
 
+        [NotNull]
         public string GetToken(User user)
         {
             var expirationDate = DateTime.Now.Add(_settings.TokenExpiration);

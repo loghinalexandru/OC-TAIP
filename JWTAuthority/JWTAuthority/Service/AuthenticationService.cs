@@ -1,4 +1,5 @@
-﻿using JWTAuthority.DataAccess.Repository;
+﻿using JetBrains.Annotations;
+using JWTAuthority.DataAccess.Repository;
 using JWTAuthority.Helpers;
 using JWTAuthority.Models;
 
@@ -25,6 +26,7 @@ namespace JWTAuthority.Service
                 : null;
         }
 
+        [NotNull]
         private bool IsValidUser(AuthorizationModel model)
         {
             var user = _userRepository.GetByUsername(model.Username);

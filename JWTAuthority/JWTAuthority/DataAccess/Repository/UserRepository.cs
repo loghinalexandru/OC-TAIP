@@ -1,4 +1,5 @@
-﻿using JWTAuthority.Domain;
+﻿using JetBrains.Annotations;
+using JWTAuthority.Domain;
 using System.Linq;
 
 namespace JWTAuthority.DataAccess.Repository
@@ -25,6 +26,7 @@ namespace JWTAuthority.DataAccess.Repository
             _context.SaveChanges();
         }
 
+        [NotNull]
         public User GetByUsername(string username)
         {
             return
