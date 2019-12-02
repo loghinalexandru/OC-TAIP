@@ -5,8 +5,10 @@ import scipy.signal as signal
 import pickle
 import datetime
 import time
+import argparse
 
 ROOT_DIR = r"raw_data"
+ROOT_DIR = r"..\Dataset\CollectedData"
 SAVE_DIR = r"processed_data"
 
 
@@ -76,4 +78,14 @@ def process_all(root_dir: str, save_dir: str, window_frame=100):
 
 if __name__ == '__main__':
     print("Processing data.")
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--raw_data_dir", "-raw_dir", default=ROOT_DIR, required=False)
+    parser.add_argument("--save_processed_data", "-save_dir", default=SAVE_DIR, required=False)
+
+    args = parser.parse_args()
+
+    ROOT_DIR = args.raw_data_dir
+    SAVE_DIR = args.save_processed_data
+
     process_all(root_dir=ROOT_DIR, save_dir=SAVE_DIR)

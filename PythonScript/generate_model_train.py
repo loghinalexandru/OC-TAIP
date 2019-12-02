@@ -1,11 +1,11 @@
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
-from keras.utils import to_categorical
 import os
 import pickle
 import numpy
 import random
+import argparse
 
 SAVE_PATH = r"models"
 PROCESSED_DATA_DIR = r"processed_data"
@@ -48,7 +48,7 @@ def get_numpy(processed_data_dir: str):
                     x_data = saved_data
                 else:
                     x_data = numpy.append(x_data, saved_data, axis=0)
-                labels = numpy.repeat(int(subject), saved_data.shape[0])
+                labels = numpy.repeat(subject, saved_data.shape[0])
                 if y_data is None:
                     y_data = labels
                 else:
@@ -85,5 +85,13 @@ def train_models(data: numpy.array, save_to: str, procentage_validation=0.2):
 
 if __name__ == '__main__':
     # train each model separately
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--save_models_dir", "-save_path", default=SAVE_PATH, required=False)
+    parser.add_argument("--processed_data_dir", "-processed_dir", default=PROCESSED_DATA_DIR, required=False)
+    args = parser.parse_args()
+
+    PROCESSED_DATA_DIR = args.processed_data_dir
+    SAVE_PATH = args.save_models_dir
+
     data = get_numpy(PROCESSED_DATA_DIR)
     train_models(data, save_to=SAVE_PATH)
