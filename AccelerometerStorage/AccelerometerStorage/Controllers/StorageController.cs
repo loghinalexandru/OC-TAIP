@@ -92,5 +92,12 @@ namespace AccelerometerStorage.WebApi
 
             return File(stream.ToArray(), "application/zip", "Model.zip");
         }
+
+        [HttpGet("users")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetUsers()
+        {
+            return Ok(await userService.Get());
+        }
     }
 }
