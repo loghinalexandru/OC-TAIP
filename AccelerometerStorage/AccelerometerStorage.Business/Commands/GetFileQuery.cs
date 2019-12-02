@@ -1,4 +1,5 @@
-﻿using EnsureThat;
+﻿using AccelerometerStorage.Domain;
+using EnsureThat;
 using System;
 
 namespace AccelerometerStorage.Business
@@ -9,13 +10,16 @@ namespace AccelerometerStorage.Business
 
         public Guid DataFileId { get; }
 
-        public GetFileQuery(string username, Guid dataFileId)
+        public FileType FileType { get; }
+
+        public GetFileQuery(string username, Guid dataFileId, FileType fileType)
         {
             EnsureArg.IsNotNullOrEmpty(username);
             EnsureArg.IsNotEmpty(dataFileId);
 
             Username = username;
             DataFileId = dataFileId;
+            FileType = fileType;
         }
     }
 }
