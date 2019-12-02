@@ -2,6 +2,7 @@
 {
     public interface IPythonHelper
     {
-        void RunScript();
+        void RunExtractionScript();
+        void RunModelTrainigScript();
     }
 }
