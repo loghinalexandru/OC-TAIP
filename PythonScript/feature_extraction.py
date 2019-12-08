@@ -68,7 +68,7 @@ def process_all(root_dir: str, save_dir: str, window_frame=100):
             if not os.path.exists(save_to_dir):
                 os.mkdir(save_to_dir)
             result = process_file(filepath=filepath, window_interval=window_frame)
-            print(result)
+            # print(result)
             save_path = os.path.join(save_to_dir, datetime.datetime.fromtimestamp(time.time()).strftime(
                                          '%Y-%m-%d %H-%M-%S') + ".pickle")
             with open(save_path, "wb") as fd:

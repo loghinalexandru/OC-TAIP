@@ -83,7 +83,7 @@ def train_models(data: numpy.array, save_to: str, procentage_validation=0.2):
         y_validation = (output[indexes] == subject).astype(numpy.float)
         y_validation = y_validation.T
 
-        model = Model([64, 64, 1], 10)
+        model = Model([16, 16, 1], 10)
         model.compile()
         model.train(x_train, y_train, x_validation, y_validation)
         model.save(os.path.join(save_to, str(subject)+".h5"))
