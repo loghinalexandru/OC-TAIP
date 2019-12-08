@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ModelPredictingService.Models
 {
-    public class Options
+    public sealed class Options
     {
         public string StorageEndpoint { get; set; }
         public string QueueEndpoint { get; set; }
@@ -12,6 +12,5 @@ namespace ModelPredictingService.Models
         public string DataPreprocessingScriptPath { get; set; }
         public string ModelPredictionScriptPath { get; set; }
         public string PythonFullPath { get; set; }
-        public int WorkerRefreshTime { get; set; }
     }
 }

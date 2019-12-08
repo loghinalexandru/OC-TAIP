@@ -27,12 +27,12 @@ namespace ModelTrainingService.DataAccess
             await contentStream.CopyToAsync(file);
         }
 
-        public async Task GetModelForUser(string username)
+        public async Task GetUserModel(string username)
         {
-            var uri = new Uri(_client.BaseAddress + "/models");
+            var uri = new Uri(_client.BaseAddress + "/models/" + username);
             var response = await _client.GetAsync(uri);
 
-            await using var file = File.Create(username + ".h5");
+            await using var file = File.Create(username + ".zip");
 
             var contentStream = await response.Content.ReadAsStreamAsync();
             await contentStream.CopyToAsync(file);
