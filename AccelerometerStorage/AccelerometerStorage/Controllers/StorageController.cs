@@ -82,12 +82,10 @@ namespace AccelerometerStorage.WebApi
                 : CreatedAtAction(null, result.ToInternalResponse());
         }
 
-        [HttpGet("models")]
-        [Authorize]
+        [HttpGet("models/{username}")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> GetModel()
+        public async Task<IActionResult> GetModel(string username)
         {
-            var username = HttpContext.ExtractUsername();
             var stream = await storageService.GetData(new GetFilteredDataQuery(username, FileType.Model));
 
             return File(stream.ToArray(), "application/zip", "Model.zip");

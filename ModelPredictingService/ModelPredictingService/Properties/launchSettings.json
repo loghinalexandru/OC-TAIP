@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "ModelPredictingService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
