@@ -14,12 +14,15 @@ namespace AccelerometerStorage.Business
         private readonly IWriteRepository<DataFile> dataFileWriteRepository;
         private readonly IReadRepository<DataFile> dataFileReadRepository;
         private readonly IUserService userService;
+        private readonly IQueueHelper queueHelper;
 
         public StorageService(
             IFileStorageService fileStorageService, 
             IWriteRepository<DataFile> dataFileWriteRepository,
             IReadRepository<DataFile> dataFileReadRepository,
-            IUserService userService)
+            IUserService userService,
+            IQueueHelper queueHelper
+            )
         {
             EnsureArg.IsNotNull(fileStorageService);
             EnsureArg.IsNotNull(dataFileWriteRepository);
@@ -30,6 +33,7 @@ namespace AccelerometerStorage.Business
             this.dataFileWriteRepository = dataFileWriteRepository;
             this.dataFileReadRepository = dataFileReadRepository;
             this.userService = userService;
+            this.queueHelper = queueHelper;
         }
 
         public async Task<Result> AddData(AddDataCommand command)
@@ -42,6 +46,8 @@ namespace AccelerometerStorage.Business
                   () => command.FileType == FileType.Input
                             ? userService.AddUser(new AddUserCommand(command.Username))
                             : Task.FromResult(userResult));
+
+            queueHelper.EnqueueMessage(userResult.Value.Username);
 
             return userResult
                 .Map(u => DataFile.Create(command.Filename, u, command.FileType))
