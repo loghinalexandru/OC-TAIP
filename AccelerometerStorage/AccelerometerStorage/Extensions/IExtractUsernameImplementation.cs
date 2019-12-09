@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace AccelerometerStorage.WebApi.Extensions
+namespace AccelerometerStorage.WebApi
 {
     public interface IExtractUsernameImplementation
     {

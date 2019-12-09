@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
 
-namespace AccelerometerStorage.WebApi.Extensions
+namespace AccelerometerStorage.WebApi
 {
     public static class Extensions
     {

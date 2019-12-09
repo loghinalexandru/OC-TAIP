@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AccelerometerStorage.WebApi.Extensions
+namespace AccelerometerStorage.WebApi
 {
     public static class ApplicationBuilderExtensions
     {

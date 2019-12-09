@@ -18,13 +18,14 @@ namespace AccelerometerStorage.Business.Tests
         private Mock<IWriteRepository<DataFile>> dataFileWriteRepositoryMock;
         private Mock<IReadRepository<DataFile>> dataFileReadRepositoryMock;
         private Mock<IUserService> userServiceMock;
+        private Mock<IQueueHelper> queueHelperMock;
 
         private readonly string csvExampleFilename = "CsvExample.csv";
 
         [Fact]
-        public async Task Given_AddData_When_UserDoesNotExist_Then_ShouldSucceed()
+        public async Task Given_AddData_When_UserDoesNotExistAndFileTypeIsInput_Then_ShouldSucceed()
         {
-            var command = GetAddDataCommand();
+            var command = GetAddDataCommand(FileType.Input);
             var user = UserFactory.GetUser();
 
             userServiceMock.Setup(service => service.GetByUsername(It.IsAny<string>()))
@@ -37,6 +38,7 @@ namespace AccelerometerStorage.Business.Tests
                 .Returns(Task.CompletedTask);
             dataFileWriteRepositoryMock.Setup(repository => repository.Commit())
                 .Returns(Task.CompletedTask);
+            queueHelperMock.Setup(helper => helper.EnqueueMessage(It.IsAny<string>()));
 
             var result = await SystemUnderTest.AddData(command);
 
@@ -44,9 +46,25 @@ namespace AccelerometerStorage.Business.Tests
         }
 
         [Fact]
+        public async Task Given_AddData_When_UserDoesNotExistAndFileTypeIsModel_Then_ShouldFail()
+        {
+            var command = GetAddDataCommand(FileType.Model);
+            var user = UserFactory.GetUser();
+
+            userServiceMock.Setup(service => service.GetByUsername(It.IsAny<string>()))
+                .ReturnsAsync(Maybe<User>.None);
+            userServiceMock.Setup(service => service.AddUser(It.IsAny<AddUserCommand>()))
+                .ReturnsAsync(Result.Success(user));
+
+            var result = await SystemUnderTest.AddData(command);
+
+            result.IsFailure.Should().BeTrue();
+        }
+
+        [Fact]
         public async Task Given_AddData_When_UserExists_Then_ShouldSucceed()
         {
-            var command = GetAddDataCommand();
+            var command = GetAddDataCommand(FileType.Input);
             var user = UserFactory.GetUser();
 
             userServiceMock.Setup(service => service.GetByUsername(It.IsAny<string>()))
@@ -57,6 +75,7 @@ namespace AccelerometerStorage.Business.Tests
                 .Returns(Task.CompletedTask);
             dataFileWriteRepositoryMock.Setup(repository => repository.Commit())
                 .Returns(Task.CompletedTask);
+            queueHelperMock.Setup(helper => helper.EnqueueMessage(It.IsAny<string>()));
 
             var result = await SystemUnderTest.AddData(command);
 
@@ -83,6 +102,8 @@ namespace AccelerometerStorage.Business.Tests
             var stream = await SystemUnderTest.GetData(query);
 
             stream.Should().NotBeNull();
+            dataFileReadRepositoryMock.Verify(repository => repository.Find(It.IsAny<Expression<Func<DataFile, bool>>>()), Times.Once);
+            fileStorageServiceMock.Verify(service => service.GetFileInfo(It.IsAny<GetFileQuery>()), Times.Once);
         }
 
         protected override IStorageService CreateSystemUnderTest()
@@ -91,7 +112,8 @@ namespace AccelerometerStorage.Business.Tests
                 fileStorageServiceMock.Object,
                 dataFileWriteRepositoryMock.Object,
                 dataFileReadRepositoryMock.Object,
-                userServiceMock.Object);
+                userServiceMock.Object,
+                queueHelperMock.Object);
         }
 
         protected override void SetupMocks(MockRepository mockRepository)
@@ -100,10 +122,11 @@ namespace AccelerometerStorage.Business.Tests
             dataFileWriteRepositoryMock = mockRepository.Create<IWriteRepository<DataFile>>();
             dataFileReadRepositoryMock = mockRepository.Create<IReadRepository<DataFile>>();
             userServiceMock = mockRepository.Create<IUserService>();
+            queueHelperMock = mockRepository.Create<IQueueHelper>();
         }
 
-        private AddDataCommand GetAddDataCommand()
-            => new AddDataCommand("stefan", "CsvExample.csv", new MemoryStream(), FileType.Input);
+        private AddDataCommand GetAddDataCommand(FileType fileType)
+            => new AddDataCommand("stefan", "CsvExample.csv", new MemoryStream(), fileType);
 
         private GetFilteredDataQuery GetGetFilteredDataQuery()
             => new GetFilteredDataQuery("stefan", FileType.Input);

@@ -47,10 +47,12 @@ namespace AccelerometerStorage.Business
                             ? userService.AddUser(new AddUserCommand(command.Username))
                             : Task.FromResult(userResult));
 
-            queueHelper.EnqueueMessage(userResult.Value.Username);
-
             return userResult
-                .Map(u => DataFile.Create(command.Filename, u, command.FileType))
+                .Map(u =>
+                {
+                    queueHelper.EnqueueMessage(u.Username);
+                    return DataFile.Create(command.Filename, u, command.FileType);
+                })
                 .Map(df =>
                 {
                     var saveFileCommand = new SaveFileCommand(command.ContentStream, command.Filename, command.Username, df.Value.Id);

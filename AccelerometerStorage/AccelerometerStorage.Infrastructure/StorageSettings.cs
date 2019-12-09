@@ -6,6 +6,11 @@
         {
         }
 
+        public static StorageSettings Dummy => new StorageSettings
+        {
+            FileStorageRootPath = ".\\dummy-path"
+        };
+
         public string FileStorageRootPath { get; private set; }
     }
 }
