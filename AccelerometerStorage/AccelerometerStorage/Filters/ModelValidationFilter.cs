@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using AccelerometerStorage.WebApi.Extensions;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

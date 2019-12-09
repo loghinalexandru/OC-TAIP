@@ -2,7 +2,7 @@
 using AccelerometerStorage.Infrastructure;
 using Microsoft.AspNetCore.Http;
 
-namespace AccelerometerStorage.WebApi.Extensions
+namespace AccelerometerStorage.WebApi
 {
     public sealed class ExtractUsernameImplementation : IExtractUsernameImplementation
     {

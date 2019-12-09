@@ -25,9 +25,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccelerometerStorage.Domain
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 - Tests", "05 - Tests", "{FBB001B7-1FCC-465D-81BB-B5468224F8E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccelerometerStorage.Tests.Common", "AccelerometerStorage.Tests.Common\AccelerometerStorage.Tests.Common.csproj", "{DBEBB649-B34B-42CF-B069-941C663897D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccelerometerStorage.Tests.Common", "AccelerometerStorage.Tests.Common\AccelerometerStorage.Tests.Common.csproj", "{DBEBB649-B34B-42CF-B069-941C663897D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccelerometerStorage.Business.Tests", "AccelerometerStorage.Business.Tests\AccelerometerStorage.Business.Tests.csproj", "{C8C737BA-DA5E-4A37-92B1-DC13A9C21904}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccelerometerStorage.Business.Tests", "AccelerometerStorage.Business.Tests\AccelerometerStorage.Business.Tests.csproj", "{C8C737BA-DA5E-4A37-92B1-DC13A9C21904}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccelerometerStorage.Domain.Tests", "AccelerometerStorage.Domain.Tests\AccelerometerStorage.Domain.Tests.csproj", "{6E56C6F3-7148-4C3C-A5CE-B439E943FEAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccelerometerStorage.Infrastructure.Tests", "AccelerometerStorage.Infrastructure.Tests\AccelerometerStorage.Infrastructure.Tests.csproj", "{D21CE6C9-81EF-4446-9686-2CB89B820C1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccelerometerStorage.WebApi.Tests", "AccelerometerStorage.WebApi.Tests\AccelerometerStorage.WebApi.Tests.csproj", "{BC2004F7-EA18-4DFA-96A6-54150AEA5E3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +73,18 @@ Global
 		{C8C737BA-DA5E-4A37-92B1-DC13A9C21904}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8C737BA-DA5E-4A37-92B1-DC13A9C21904}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8C737BA-DA5E-4A37-92B1-DC13A9C21904}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E56C6F3-7148-4C3C-A5CE-B439E943FEAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E56C6F3-7148-4C3C-A5CE-B439E943FEAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E56C6F3-7148-4C3C-A5CE-B439E943FEAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E56C6F3-7148-4C3C-A5CE-B439E943FEAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D21CE6C9-81EF-4446-9686-2CB89B820C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D21CE6C9-81EF-4446-9686-2CB89B820C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D21CE6C9-81EF-4446-9686-2CB89B820C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D21CE6C9-81EF-4446-9686-2CB89B820C1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC2004F7-EA18-4DFA-96A6-54150AEA5E3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC2004F7-EA18-4DFA-96A6-54150AEA5E3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC2004F7-EA18-4DFA-96A6-54150AEA5E3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC2004F7-EA18-4DFA-96A6-54150AEA5E3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +98,9 @@ Global
 		{89F2CCDB-4598-45CB-B6A0-825757734BDF} = {C5E1F0CD-47CA-4296-BC71-67D226491932}
 		{DBEBB649-B34B-42CF-B069-941C663897D4} = {FBB001B7-1FCC-465D-81BB-B5468224F8E3}
 		{C8C737BA-DA5E-4A37-92B1-DC13A9C21904} = {FBB001B7-1FCC-465D-81BB-B5468224F8E3}
+		{6E56C6F3-7148-4C3C-A5CE-B439E943FEAA} = {FBB001B7-1FCC-465D-81BB-B5468224F8E3}
+		{D21CE6C9-81EF-4446-9686-2CB89B820C1C} = {FBB001B7-1FCC-465D-81BB-B5468224F8E3}
+		{BC2004F7-EA18-4DFA-96A6-54150AEA5E3F} = {FBB001B7-1FCC-465D-81BB-B5468224F8E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9DE2E3E5-A529-449C-B08A-FAC95A1EE955}

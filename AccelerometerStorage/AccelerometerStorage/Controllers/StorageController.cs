@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AccelerometerStorage.Business;
 using AccelerometerStorage.Domain;
-using AccelerometerStorage.WebApi.Extensions;
 using CSharpFunctionalExtensions;
 using EnsureThat;
 using Microsoft.AspNetCore.Authorization;

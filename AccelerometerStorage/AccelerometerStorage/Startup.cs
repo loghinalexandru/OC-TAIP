@@ -1,7 +1,6 @@
 ﻿using AccelerometerStorage.Business;
 using AccelerometerStorage.Infrastructure;
 using AccelerometerStorage.Persistance.EntityFramework;
-using AccelerometerStorage.WebApi.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
