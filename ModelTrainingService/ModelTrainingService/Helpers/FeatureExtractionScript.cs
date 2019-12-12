@@ -1,6 +1,6 @@
-﻿using ModelTrainingService.Models;
-using System.Diagnostics;
+﻿using Anotar.NLog;
 using ModelTrainingService.Models.Interfaces;
+using System.Diagnostics;
 
 namespace ModelTrainingService.Helpers
 {
@@ -26,6 +26,8 @@ namespace ModelTrainingService.Helpers
             };
 
             process.Start();
+
+            LogTo.Debug(process.StandardOutput.ReadToEnd());
         }
     }
 }

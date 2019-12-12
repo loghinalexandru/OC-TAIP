@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace ModelTrainingService.DataAccess
+namespace ModelPredictingService.Models
 {
     public interface IStorageRepository
     {

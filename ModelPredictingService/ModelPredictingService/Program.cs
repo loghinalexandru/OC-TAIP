@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ModelPredictingService.DataAccess;
 using ModelPredictingService.Helpers;
 using ModelPredictingService.Models;
-using ModelTrainingService.DataAccess;
 
 namespace ModelPredictingService
 {

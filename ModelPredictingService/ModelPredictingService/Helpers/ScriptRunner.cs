@@ -17,6 +17,8 @@ namespace ModelPredictingService.Helpers
             try
             {
                 script.Run(_pythonPath);
+
+                LogTo.Debug(p.StandardOutput.ReadToEnd());
             }
             catch (Exception ex)
             {
