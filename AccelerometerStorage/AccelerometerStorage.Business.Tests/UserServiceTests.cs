@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using AccelerometerStorage.Domain;
+﻿using AccelerometerStorage.Domain;
 using AccelerometerStorage.Tests.Common;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace AccelerometerStorage.Business.Tests
@@ -65,15 +65,14 @@ namespace AccelerometerStorage.Business.Tests
         [Fact]
         public async Task Given_Get_Then_ShouldReturnUserDtos()
         {
-            var username = "stefan";
             var user = UserFactory.GetUser();
 
             readRepositoryMock.Setup(repository => repository.GetAll())
-                .ReturnsAsync(new List<User> { user });
+                .ReturnsAsync(new List<User> {user});
 
             var result = await SystemUnderTest.Get();
             var userDtos = result.ToList();
-            
+
             userDtos.Count().Should().Be(1);
             var userDto = userDtos.First();
             userDto.Id.Should().Be(user.Id);

@@ -4,11 +4,11 @@ using ModelPredictingService.Models;
 
 namespace ModelPredictingService.Helpers
 {
-    public class PredictionScript : IPythonScript
+    public class FeatureExtractionScript : IPythonScript
     {
         private readonly string _scriptPath;
 
-        public PredictionScript(string scriptPath)
+        public FeatureExtractionScript(string scriptPath)
         {
             _scriptPath = scriptPath;
         }
@@ -19,7 +19,9 @@ namespace ModelPredictingService.Helpers
             {
                 StartInfo = new ProcessStartInfo(pythonPath, _scriptPath)
                 {
-                    RedirectStandardOutput = true, UseShellExecute = false, CreateNoWindow = true
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
                 }
             };
 

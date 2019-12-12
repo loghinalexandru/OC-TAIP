@@ -1,5 +1,5 @@
-﻿using System;
-using ModelPredictingService.Models;
+﻿using ModelPredictingService.Models;
+using System;
 
 namespace ModelPredictingService.Helpers
 {
@@ -17,8 +17,6 @@ namespace ModelPredictingService.Helpers
             try
             {
                 script.Run(_pythonPath);
-
-                LogTo.Debug(p.StandardOutput.ReadToEnd());
             }
             catch (Exception ex)
             {

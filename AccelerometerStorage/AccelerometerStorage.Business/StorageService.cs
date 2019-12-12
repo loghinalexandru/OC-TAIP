@@ -1,10 +1,10 @@
-﻿using System.IO;
+﻿using AccelerometerStorage.Domain;
+using CSharpFunctionalExtensions;
+using EnsureThat;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-using AccelerometerStorage.Domain;
-using CSharpFunctionalExtensions;
-using EnsureThat;
 
 namespace AccelerometerStorage.Business
 {
@@ -17,12 +17,12 @@ namespace AccelerometerStorage.Business
         private readonly IQueueHelper queueHelper;
 
         public StorageService(
-            IFileStorageService fileStorageService, 
+            IFileStorageService fileStorageService,
             IWriteRepository<DataFile> dataFileWriteRepository,
             IReadRepository<DataFile> dataFileReadRepository,
             IUserService userService,
             IQueueHelper queueHelper
-            )
+        )
         {
             EnsureArg.IsNotNull(fileStorageService);
             EnsureArg.IsNotNull(dataFileWriteRepository);
@@ -43,9 +43,9 @@ namespace AccelerometerStorage.Business
             var userResult = await userService.GetByUsername(command.Username)
                 .ToResult("User not found");
             userResult = await userResult.OnFailureCompensate(
-                  () => command.FileType == FileType.Input
-                            ? userService.AddUser(new AddUserCommand(command.Username))
-                            : Task.FromResult(userResult));
+                () => command.FileType == FileType.Input
+                    ? userService.AddUser(new AddUserCommand(command.Username))
+                    : Task.FromResult(userResult));
 
             return userResult
                 .Map(u =>
@@ -55,7 +55,8 @@ namespace AccelerometerStorage.Business
                 })
                 .Map(df =>
                 {
-                    var saveFileCommand = new SaveFileCommand(command.ContentStream, command.Filename, command.Username, df.Value.Id);
+                    var saveFileCommand = new SaveFileCommand(command.ContentStream, command.Filename, command.Username,
+                        df.Value.Id);
                     fileStorageService.SaveFile(saveFileCommand);
                     return df.Value;
                 })
@@ -67,9 +68,10 @@ namespace AccelerometerStorage.Business
         {
             EnsureArg.IsNotNull(query);
 
-            var dataFiles = query.Username == null || query.Username.Equals("")
+            var dataFiles = string.IsNullOrEmpty(query.Username)
                 ? await dataFileReadRepository.GetAll()
-                : await dataFileReadRepository.Find(df => df.User.Username == query.Username);
+                : await dataFileReadRepository.Find(df =>
+                    df.User.Username == query.Username && df.UploadedAt >= query.StartingFrom);
 
             var files = dataFiles
                 .Where(df => df.FileType == query.FileType)
@@ -78,18 +80,43 @@ namespace AccelerometerStorage.Business
                 .Where(dfr => dfr.IsSuccess)
                 .Select(dfr => dfr.Value);
 
-            using (var memoryStream = new MemoryStream())
-            {
-                using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-                {
-                    foreach (var file in files)
-                    {
-                        zipArchive.CreateEntryFromFile(file.Filepath, file.Filename);
-                    }
-                }
+            using var memoryStream = new MemoryStream();
+            using var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true);
 
+            foreach (var file in files)
+            {
+                zipArchive.CreateEntryFromFile(file.Filepath, file.Filename);
+            }
+
+            return memoryStream;
+        }
+
+        public async Task<MemoryStream> GetLatest(GetFilteredDataQuery query)
+        {
+            var memoryStream = new MemoryStream();
+
+            var files = await dataFileReadRepository.GetAll();
+
+            var latestFile = files.OrderByDescending(file => file.UploadedAt).FirstOrDefault();
+
+            if (latestFile == null)
+            {
                 return memoryStream;
             }
+
+            var (_, isFailure, value) =
+                fileStorageService.GetFileInfo(new GetFileQuery(query.Username, latestFile.Id, query.FileType));
+
+            if (isFailure)
+            {
+                return memoryStream;
+            }
+
+            var fileStream = File.OpenRead(value.Filepath);
+
+            fileStream.CopyTo(memoryStream);
+
+            return memoryStream;
         }
     }
 }

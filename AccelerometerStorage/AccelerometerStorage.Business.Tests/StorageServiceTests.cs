@@ -129,6 +129,6 @@ namespace AccelerometerStorage.Business.Tests
             => new AddDataCommand("stefan", "CsvExample.csv", new MemoryStream(), fileType);
 
         private GetFilteredDataQuery GetGetFilteredDataQuery()
-            => new GetFilteredDataQuery("stefan", FileType.Input);
+            => new GetFilteredDataQuery("stefan", FileType.Input, DateTime.MinValue);
     }
 }

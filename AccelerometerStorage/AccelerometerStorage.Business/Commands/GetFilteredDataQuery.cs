@@ -1,5 +1,7 @@
-﻿using AccelerometerStorage.Domain;
+﻿using System;
+using AccelerometerStorage.Domain;
 using EnsureThat;
+using Microsoft.VisualBasic;
 
 namespace AccelerometerStorage.Business
 {
@@ -9,10 +11,13 @@ namespace AccelerometerStorage.Business
 
         public FileType FileType { get; }
 
-        public GetFilteredDataQuery(string username, FileType fileType)
+        public DateTime StartingFrom { get; }
+
+        public GetFilteredDataQuery(string username, FileType fileType, DateTime startingFrom)
         {
             Username = username;
             FileType = fileType;
+            StartingFrom = startingFrom;
         }
     }
 }

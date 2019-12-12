@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
-using AccelerometerStorage.Business;
+﻿using AccelerometerStorage.Business;
 using AccelerometerStorage.Domain;
 using CSharpFunctionalExtensions;
 using EnsureThat;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace AccelerometerStorage.WebApi
 {
@@ -52,7 +53,7 @@ namespace AccelerometerStorage.WebApi
             var result = await userService.AddUser(command);
 
             return result.IsFailure
-                ? (IActionResult)BadRequest(Result.Failure(result.Error).ToInternalResponse())
+                ? (IActionResult) BadRequest(Result.Failure(result.Error).ToInternalResponse())
                 : CreatedAtAction(null, result.ToInternalResponse());
         }
 
@@ -60,10 +61,47 @@ namespace AccelerometerStorage.WebApi
         [ProducesResponseType(200)]
         public async Task<IActionResult> Get([FromQuery] UserFilterModel model)
         {
-            var username = model == null ? "" : model.Username;
-            var stream = await storageService.GetData(new GetFilteredDataQuery(username, FileType.Input));
+            var username = model?.Username ?? "";
+            var startDate = model?.StartingFrom ?? DateTime.MinValue.ToString();
+            var stream =
+                await storageService.GetData(new GetFilteredDataQuery(username, FileType.Input,
+                    DateTime.Parse(startDate)));
 
             return File(stream.ToArray(), "application/zip", "Data.zip");
+        }
+
+        [HttpGet("data/latest/{username}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetLatestData(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return BadRequest();
+            }
+
+            var stream =
+                await storageService.GetLatest(new GetFilteredDataQuery(username, FileType.Input,
+                    DateTime.MinValue));
+
+            return File(stream, "text/csv", $"latest_{username}.csv");
+        }
+
+        [HttpGet("models/latest/{username}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetLatestModel(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return BadRequest();
+            }
+
+            var stream =
+                await storageService.GetLatest(new GetFilteredDataQuery(username, FileType.Model,
+                    DateTime.MinValue));
+
+            return File(stream, "text/csv", $"latest_{username}.h5");
         }
 
         [HttpPost("models/{username}")]
@@ -77,7 +115,7 @@ namespace AccelerometerStorage.WebApi
             var result = await storageService.AddData(command);
 
             return result.IsFailure
-                ? (IActionResult)BadRequest(Result.Failure(result.Error).ToInternalResponse())
+                ? (IActionResult) BadRequest(Result.Failure(result.Error).ToInternalResponse())
                 : CreatedAtAction(null, result.ToInternalResponse());
         }
 
@@ -85,7 +123,8 @@ namespace AccelerometerStorage.WebApi
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetModel(string username)
         {
-            var stream = await storageService.GetData(new GetFilteredDataQuery(username, FileType.Model));
+            var stream =
+                await storageService.GetData(new GetFilteredDataQuery(username, FileType.Model, DateTime.MinValue));
 
             return File(stream.ToArray(), "application/zip", "Model.zip");
         }
