@@ -44,9 +44,9 @@ namespace AccelerometerStorage.WebApi
             }
 
             app.UseHttpsRedirection()
+                .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()
-                .UseRouting()
                 .UseCors("AllowAll")
                 .UseEndpoints(endpoints => { endpoints.MapControllers(); })
                 .UpdateDatabase()
