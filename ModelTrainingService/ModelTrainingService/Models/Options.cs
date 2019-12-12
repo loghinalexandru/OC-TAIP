@@ -1,6 +1,6 @@
 ﻿namespace ModelTrainingService.Models
 {
-    public class Options
+    public sealed class Options
     {
         public string StorageEndpoint { get; set; }
         public string DataPreprocessingScriptPath { get; set; }

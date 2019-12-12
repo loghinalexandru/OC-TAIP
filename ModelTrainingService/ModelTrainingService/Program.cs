@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using ModelTrainingService.DataAccess;
 using ModelTrainingService.Helpers;
 using ModelTrainingService.Models;
+using ModelTrainingService.Models.Interfaces;
 
 namespace ModelTrainingService
 {
@@ -24,9 +24,9 @@ namespace ModelTrainingService
 
                     var options = configuration.GetSection("Options").Get<Options>();
                     services.AddSingleton(options);
+                    services.AddSingleton<IScriptRunner, ScriptRunner>();
 
                     services.AddTransient<IStorageRepository, StorageRepository>();
-                    services.AddTransient<IPythonHelper, PythonHelper>();
                     services.AddHostedService<Worker>();
                 });
     }

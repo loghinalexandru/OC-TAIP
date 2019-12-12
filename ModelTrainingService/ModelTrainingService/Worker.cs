@@ -9,6 +9,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ModelTrainingService.Models.Interfaces;
 
 namespace ModelTrainingService
 {
@@ -17,35 +18,49 @@ namespace ModelTrainingService
         private readonly ILogger<Worker> _logger;
         private readonly IStorageRepository _storageRepository;
         private readonly Options _options;
-        private readonly IPythonHelper _helper;
+        private readonly IScriptRunner _scriptRunner;
 
-        public Worker(ILogger<Worker> logger, Options options, IStorageRepository storageRepository,
-            IPythonHelper helper)
+        public Worker(ILogger<Worker> logger,
+            Options options,
+            IStorageRepository storageRepository,
+            IScriptRunner scriptRunner)
         {
             _logger = logger;
             _storageRepository = storageRepository;
             _options = options;
-            _helper = helper;
+            _scriptRunner = scriptRunner;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation(AppDomain.CurrentDomain.BaseDirectory);
+
+            SetWorkingDirectory();
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-                await _storageRepository.GetAllUserData("all-users.zip");
-                ZipFile.ExtractToDirectory("all-users.zip", "raw_data");
+                try
+                {
+                    await GetStorageUserData();
 
-                _helper.RunExtractionScript();
+                    _scriptRunner.Execute(new FeatureExtractionScript(_options.DataPreprocessingScriptPath));
 
-                _helper.RunModelTrainigScript();
+                    _scriptRunner.Execute(new ModelGenerationScript(_options.ModelGenerationScriptPath));
 
-                PostUserModels();
+                    PostUserModels();
 
-                _logger.LogInformation("Cleaning up at: {time}", DateTimeOffset.Now);
-
-                CleanDirectory();
+                    _logger.LogInformation("Cleaning up at: {time}", DateTimeOffset.Now);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogInformation(e.Message);
+                }
+                finally
+                {
+                    CleanDirectory();
+                }
 
                 await Task.Delay(TimeSpan.FromHours(_options.WorkerRefreshTime), stoppingToken);
             }
@@ -53,10 +68,21 @@ namespace ModelTrainingService
 
         private void PostUserModels()
         {
-            foreach(var file in Directory.EnumerateFiles("trained_models"))
+            foreach (var file in Directory.EnumerateFiles("trained_models"))
             {
                 _storageRepository.PostUserModel(Path.GetFileNameWithoutExtension(file), file);
             }
+        }
+
+        private async Task GetStorageUserData()
+        {
+            await _storageRepository.GetAllUserData("all-users.zip");
+            ZipFile.ExtractToDirectory("all-users.zip", "raw_data");
+        }
+
+        private void SetWorkingDirectory()
+        {
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
         }
 
         private void CleanDirectory()
@@ -65,9 +91,18 @@ namespace ModelTrainingService
                 .GetFiles(".\\", "*.zip", SearchOption.TopDirectoryOnly)
                 .ToList()
                 .ForEach(File.Delete);
-            Directory.Delete(Path.GetFullPath("raw_data"), true);
-            Directory.Delete(Path.GetFullPath("processed_data"), true);
-            Directory.Delete(Path.GetFullPath("trained_models"), true);
+
+            SafeDirectoryDelete("raw_data");
+            SafeDirectoryDelete("processed_data");
+            SafeDirectoryDelete("trained_models");
+        }
+
+        private void SafeDirectoryDelete(string directoryPath)
+        {
+            if (Directory.Exists(directoryPath))
+            {
+                Directory.Delete(Path.GetFullPath(directoryPath), true);
+            }
         }
     }
 }

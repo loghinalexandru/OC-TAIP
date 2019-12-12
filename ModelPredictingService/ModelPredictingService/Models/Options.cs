@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ModelPredictingService.Models
+﻿namespace ModelPredictingService.Models
 {
     public sealed class Options
     {

@@ -1,10 +1,10 @@
-﻿using ModelPredictingService.Models;
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using ModelPredictingService.Models;
 
-namespace ModelTrainingService.DataAccess
+namespace ModelPredictingService.DataAccess
 {
     public class StorageRepository : IStorageRepository
     {

@@ -1,7 +1,7 @@
-﻿using RabbitMQ.Client.Events;
-using System;
+﻿using System;
+using RabbitMQ.Client.Events;
 
-namespace ModelPredictingService.Helpers
+namespace ModelPredictingService.Models
 {
     public interface IQueueHelper
     {

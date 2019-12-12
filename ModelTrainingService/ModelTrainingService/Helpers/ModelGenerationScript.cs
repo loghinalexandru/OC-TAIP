@@ -1,13 +1,15 @@
-﻿using System.Diagnostics;
-using ModelPredictingService.Models;
+﻿using Anotar.NLog;
+using ModelTrainingService.Models;
+using System.Diagnostics;
+using ModelTrainingService.Models.Interfaces;
 
-namespace ModelPredictingService.Helpers
+namespace ModelTrainingService.Helpers
 {
-    public class PredictionScript : IPythonScript
+    public class ModelGenerationScript : IPythonScript
     {
         private readonly string _scriptPath;
 
-        public PredictionScript(string scriptPath)
+        public ModelGenerationScript(string scriptPath)
         {
             _scriptPath = scriptPath;
         }
@@ -21,8 +23,9 @@ namespace ModelPredictingService.Helpers
                     RedirectStandardOutput = true, UseShellExecute = false, CreateNoWindow = true
                 }
             };
-
             process.Start();
+
+            LogTo.Debug(process.StandardOutput.ReadToEnd());
         }
     }
 }

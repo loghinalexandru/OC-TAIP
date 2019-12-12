@@ -1,3 +1,8 @@
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using ModelPredictingService.Helpers;
+using ModelPredictingService.Models;
+using RabbitMQ.Client.Events;
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -5,13 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using ModelPredictingService.Helpers;
-using ModelPredictingService.Models;
-using ModelTrainingService.DataAccess;
-using ModelTrainingService.Helpers;
-using RabbitMQ.Client.Events;
 
 namespace ModelPredictingService
 {
@@ -22,7 +20,8 @@ namespace ModelPredictingService
         private readonly IStorageRepository _storageRepository;
         private readonly Options _options;
 
-        public Worker(ILogger<Worker> logger, IQueueHelper queueHelper, IStorageRepository storageRepository, Options options)
+        public Worker(ILogger<Worker> logger, IQueueHelper queueHelper, IStorageRepository storageRepository,
+            Options options)
         {
             _logger = logger;
             _queueHelper = queueHelper;
@@ -36,8 +35,11 @@ namespace ModelPredictingService
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
+            SetWorkingDirectory();
+
             while (!stoppingToken.IsCancellationRequested)
             {
+                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }
 
@@ -48,10 +50,10 @@ namespace ModelPredictingService
 
         private async void Consumer(object sender, BasicDeliverEventArgs args)
         {
+            var username = Encoding.UTF8.GetString(args.Body);
+
             try
             {
-                var username = Encoding.UTF8.GetString(args.Body);
-
                 await _storageRepository.GetUserModel(username);
                 ZipFile.ExtractToDirectory(username + ".zip", username + "_models");
 
@@ -64,13 +66,20 @@ namespace ModelPredictingService
 
                 var scriptRunner = new ScriptRunner(_options.PythonFullPath);
                 scriptRunner.Execute(new PredictionScript(_options.ModelPredictionScriptPath));
-
-                CleanDirectory(username);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogInformation(ex.Message);
             }
+            finally
+            {
+                CleanDirectory(username);
+            }
+        }
+
+        private void SetWorkingDirectory()
+        {
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
         }
 
         private void CleanDirectory(string username)
@@ -79,7 +88,11 @@ namespace ModelPredictingService
                 .GetFiles(".\\", "*.zip", SearchOption.TopDirectoryOnly)
                 .ToList()
                 .ForEach(File.Delete);
-            Directory.Delete(Path.GetFullPath(username + "_models"), true);
+
+            if (Directory.Exists(Path.GetFullPath(username + "_models")))
+            {
+                Directory.Delete(Path.GetFullPath(username + "_models"), true);
+            }
         }
     }
 }
