@@ -5,7 +5,6 @@ using ModelPredictingService.Models;
 using RabbitMQ.Client.Events;
 using System;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -19,13 +18,19 @@ namespace ModelPredictingService
         private readonly IQueueHelper _queueHelper;
         private readonly IStorageRepository _storageRepository;
         private readonly Options _options;
+        private readonly IScriptRunner _scriptRunner;
 
-        public Worker(ILogger<Worker> logger, IQueueHelper queueHelper, IStorageRepository storageRepository,
+        public Worker(
+            ILogger<Worker> logger,
+            IQueueHelper queueHelper,
+            IStorageRepository storageRepository,
+            IScriptRunner scriptRunner,
             Options options)
         {
             _logger = logger;
             _queueHelper = queueHelper;
             _storageRepository = storageRepository;
+            _scriptRunner = scriptRunner;
             _options = options;
 
             InitQueue();
@@ -54,18 +59,11 @@ namespace ModelPredictingService
 
             try
             {
-                await _storageRepository.GetUserModel(username);
-                ZipFile.ExtractToDirectory(username + ".zip", username + "_models");
+                await _storageRepository.GetLatestUserData(username);
+                await _storageRepository.GetLatestUserModel(username);
 
-                var modelPath = Directory.GetFiles(username + "_models").FirstOrDefault();
-
-                if (modelPath == null)
-                {
-                    return;
-                }
-
-                var scriptRunner = new ScriptRunner(_options.PythonFullPath);
-                scriptRunner.Execute(new PredictionScript(_options.ModelPredictionScriptPath));
+                _scriptRunner.Execute(new PredictionScript(_options.DataPreprocessingScriptPath));
+                _scriptRunner.Execute(new PredictionScript(_options.ModelPredictionScriptPath));
             }
             catch (Exception ex)
             {
@@ -85,14 +83,14 @@ namespace ModelPredictingService
         private void CleanDirectory(string username)
         {
             Directory
-                .GetFiles(".\\", "*.zip", SearchOption.TopDirectoryOnly)
+                .GetFiles(".\\", "*.csv", SearchOption.TopDirectoryOnly)
                 .ToList()
                 .ForEach(File.Delete);
 
-            if (Directory.Exists(Path.GetFullPath(username + "_models")))
-            {
-                Directory.Delete(Path.GetFullPath(username + "_models"), true);
-            }
+            Directory
+                .GetFiles(".\\", "*.h5", SearchOption.TopDirectoryOnly)
+                .ToList()
+                .ForEach(File.Delete);
         }
     }
 }

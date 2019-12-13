@@ -3,13 +3,13 @@ using System;
 
 namespace ModelPredictingService.Helpers
 {
-    public class ScriptRunner
+    public class ScriptRunner : IScriptRunner
     {
         private readonly string _pythonPath;
 
-        public ScriptRunner(string pythonPath)
+        public ScriptRunner(Options options)
         {
-            _pythonPath = pythonPath;
+            _pythonPath = options.PythonFullPath;
         }
 
         public void Execute(IPythonScript script)

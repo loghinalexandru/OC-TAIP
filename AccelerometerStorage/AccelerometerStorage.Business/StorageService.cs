@@ -95,7 +95,7 @@ namespace AccelerometerStorage.Business
         {
             var memoryStream = new MemoryStream();
 
-            var files = await dataFileReadRepository.GetAll();
+            var files = await dataFileReadRepository.Find(df => df.User.Username == query.Username);
 
             var latestFile = files.OrderByDescending(file => file.UploadedAt).FirstOrDefault();
 

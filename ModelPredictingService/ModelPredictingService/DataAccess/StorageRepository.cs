@@ -1,8 +1,8 @@
-﻿using System;
+﻿using ModelPredictingService.Models;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using ModelPredictingService.Models;
 
 namespace ModelPredictingService.DataAccess
 {
@@ -16,23 +16,27 @@ namespace ModelPredictingService.DataAccess
                 new HttpClient {BaseAddress = new Uri(options.StorageEndpoint)};
         }
 
-        public async Task GetUserData(string username, string filename)
+        public async Task GetLatestUserData(string username)
         {
-            var uri = new Uri(_client.BaseAddress + "?Username=" + username);
+            var uri = new Uri(_client.BaseAddress + "/data/latest/" + username);
             var response = await _client.GetAsync(uri);
 
-            await using var file = File.Create(filename);
+            var fileName = response.Content.Headers.ContentDisposition.FileName;
+
+            await using var file = File.Create(fileName);
 
             var contentStream = await response.Content.ReadAsStreamAsync();
             await contentStream.CopyToAsync(file);
         }
 
-        public async Task GetUserModel(string username)
+        public async Task GetLatestUserModel(string username)
         {
-            var uri = new Uri(_client.BaseAddress + "/models/" + username);
+            var uri = new Uri(_client.BaseAddress + "/models/latest/" + username);
             var response = await _client.GetAsync(uri);
 
-            await using var file = File.Create(username + ".zip");
+            var fileName = response.Content.Headers.ContentDisposition.FileName;
+
+            await using var file = File.Create(fileName);
 
             var contentStream = await response.Content.ReadAsStreamAsync();
             await contentStream.CopyToAsync(file);
