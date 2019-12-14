@@ -84,7 +84,7 @@ namespace AccelerometerStorage.WebApi
                 await storageService.GetLatest(new GetFilteredDataQuery(username, FileType.Input,
                     DateTime.MinValue));
 
-            return File(stream, "text/csv", $"latest_{username}.csv");
+            return File(stream.ToArray(), "text/csv", $"latest_{username}.csv");
         }
 
         [HttpGet("models/latest/{username}")]
@@ -101,7 +101,7 @@ namespace AccelerometerStorage.WebApi
                 await storageService.GetLatest(new GetFilteredDataQuery(username, FileType.Model,
                     DateTime.MinValue));
 
-            return File(stream, "text/csv", $"latest_{username}.h5");
+            return File(stream.ToArray(), "text/csv", $"latest_{username}.h5");
         }
 
         [HttpPost("models/{username}")]
