@@ -1,16 +1,18 @@
-﻿using System.Diagnostics;
-using Anotar.NLog;
+﻿using Anotar.NLog;
 using ModelPredictingService.Models;
+using System.Diagnostics;
 
 namespace ModelPredictingService.Helpers
 {
     public class FeatureExtractionScript : IPythonScript
     {
         private readonly string _scriptPath;
+        private readonly string _username;
 
-        public FeatureExtractionScript(string scriptPath)
+        public FeatureExtractionScript(string scriptPath, string username)
         {
             _scriptPath = scriptPath;
+            _username = username;
         }
 
         public void Run(string pythonPath)
@@ -21,7 +23,9 @@ namespace ModelPredictingService.Helpers
                 {
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
-                    CreateNoWindow = true
+                    CreateNoWindow = true,
+                    Arguments = $"--raw_data_dir data_{_username} " +
+                                $"--save_processed_data processed_data{_username}"
                 }
             };
 

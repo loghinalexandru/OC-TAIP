@@ -18,12 +18,15 @@ namespace ModelPredictingService.DataAccess
 
         public async Task GetLatestUserData(string username)
         {
+            var dataPath = $"data_{username}";
             var uri = new Uri(_client.BaseAddress + "/data/latest/" + username);
             var response = await _client.GetAsync(uri);
 
             var fileName = response.Content.Headers.ContentDisposition.FileName;
 
-            await using var file = File.Create(fileName);
+            Directory.CreateDirectory(dataPath);
+
+            await using var file = File.Create(Path.Combine(dataPath, fileName));
 
             var contentStream = await response.Content.ReadAsStreamAsync();
             await contentStream.CopyToAsync(file);
@@ -31,12 +34,15 @@ namespace ModelPredictingService.DataAccess
 
         public async Task GetLatestUserModel(string username)
         {
+            var modelPath = $"model_{username}";
             var uri = new Uri(_client.BaseAddress + "/models/latest/" + username);
             var response = await _client.GetAsync(uri);
 
             var fileName = response.Content.Headers.ContentDisposition.FileName;
 
-            await using var file = File.Create(fileName);
+            Directory.CreateDirectory(modelPath);
+
+            await using var file = File.Create(Path.Combine(modelPath, fileName));
 
             var contentStream = await response.Content.ReadAsStreamAsync();
             await contentStream.CopyToAsync(file);

@@ -1,18 +1,18 @@
-﻿using System.Diagnostics;
-using Anotar.NLog;
+﻿using Anotar.NLog;
 using ModelPredictingService.Models;
+using System.Diagnostics;
 
 namespace ModelPredictingService.Helpers
 {
     public class PredictionScript : IPythonScript
     {
         private readonly string _scriptPath;
-        private readonly string _useranme;
+        private readonly string _username;
 
         public PredictionScript(string scriptPath, string username)
         {
             _scriptPath = scriptPath;
-            _useranme = username;
+            _username = username;
         }
 
         public void Run(string pythonPath)
@@ -21,10 +21,13 @@ namespace ModelPredictingService.Helpers
             {
                 StartInfo = new ProcessStartInfo(pythonPath, _scriptPath)
                 {
-                    RedirectStandardOutput = true, 
-                    UseShellExecute = false, 
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
                     CreateNoWindow = true,
-                    Arguments = $"--username {_useranme}"
+                    Arguments = $"--root_to_predict processed_data_{_username} " +
+                                $"--username {_username} " +
+                                $"--models_dir models_{_username} " +
+                                $"--predictions_dir predictions_{_username}"
                 }
             };
 

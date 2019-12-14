@@ -62,7 +62,7 @@ namespace ModelPredictingService
                 await _storageRepository.GetLatestUserData(username);
                 await _storageRepository.GetLatestUserModel(username);
 
-                _scriptRunner.Execute(new FeatureExtractionScript(_options.DataPreprocessingScriptPath));
+                _scriptRunner.Execute(new FeatureExtractionScript(_options.DataPreprocessingScriptPath, username));
                 _scriptRunner.Execute(new PredictionScript(_options.ModelPredictionScriptPath, username));
             }
             catch (Exception ex)
