@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AccelerometerStorage.Business\AccelerometerStorage.Business.csproj" />
     <ProjectReference Include="..\AccelerometerStorage.Domain\AccelerometerStorage.Domain.csproj" />
   </ItemGroup>
 

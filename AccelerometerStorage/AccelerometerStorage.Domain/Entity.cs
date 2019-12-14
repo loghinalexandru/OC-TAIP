@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AccelerometerStorage.Domain
 {
@@ -7,9 +8,14 @@ namespace AccelerometerStorage.Domain
         protected Entity()
         {
             this.Id = Guid.NewGuid();
+            this._domainEvents = new List<INotification>();
         }
 
         public Guid Id { get; private set; }
+
+        private readonly List<INotification> _domainEvents;
+
+        public IReadOnlyList<INotification> DomainEvents => _domainEvents;
 
         public override int GetHashCode()
         {
@@ -33,8 +39,18 @@ namespace AccelerometerStorage.Domain
                 return false;
             }
 
-            Entity other = (Entity)obj;
+            Entity other = (Entity) obj;
             return this.GetHashCode() == other.GetHashCode();
+        }
+
+        public void AddDomainEvent(INotification eventItem)
+        {
+            _domainEvents.Add(eventItem);
+        }
+
+        public void RemoteDomainEvent(INotification eventItem)
+        {
+            _domainEvents.Remove(eventItem);
         }
     }
 }

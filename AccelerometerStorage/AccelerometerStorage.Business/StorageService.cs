@@ -1,4 +1,5 @@
 ﻿using AccelerometerStorage.Domain;
+using AccelerometerStorage.Domain.Events;
 using CSharpFunctionalExtensions;
 using EnsureThat;
 using System.IO;
@@ -14,15 +15,12 @@ namespace AccelerometerStorage.Business
         private readonly IWriteRepository<DataFile> dataFileWriteRepository;
         private readonly IReadRepository<DataFile> dataFileReadRepository;
         private readonly IUserService userService;
-        private readonly IQueueHelper queueHelper;
 
         public StorageService(
             IFileStorageService fileStorageService,
             IWriteRepository<DataFile> dataFileWriteRepository,
             IReadRepository<DataFile> dataFileReadRepository,
-            IUserService userService,
-            IQueueHelper queueHelper
-        )
+            IUserService userService)
         {
             EnsureArg.IsNotNull(fileStorageService);
             EnsureArg.IsNotNull(dataFileWriteRepository);
@@ -33,7 +31,6 @@ namespace AccelerometerStorage.Business
             this.dataFileWriteRepository = dataFileWriteRepository;
             this.dataFileReadRepository = dataFileReadRepository;
             this.userService = userService;
-            this.queueHelper = queueHelper;
         }
 
         public async Task<Result> AddData(AddDataCommand command)
@@ -47,11 +44,19 @@ namespace AccelerometerStorage.Business
                     ? userService.AddUser(new AddUserCommand(command.Username))
                     : Task.FromResult(userResult));
 
+            var modelResult = await dataFileReadRepository.Find(file =>
+                file.User.Username == command.Username && file.FileType == FileType.Model);
+
             return userResult
                 .Map(u =>
                 {
-                    queueHelper.EnqueueMessage(u.Username);
-                    return DataFile.Create(command.Filename, u, command.FileType);
+                    var newFile = DataFile.Create(command.Filename, u, command.FileType);
+                    if (command.FileType == FileType.Input && modelResult.FirstOrDefault() != null && newFile.IsSuccess)
+                    {
+                        newFile.Value.AddDomainEvent(new NewAccelerometerDataEvent {Message = command.Username});
+                    }
+
+                    return newFile;
                 })
                 .Map(df =>
                 {
