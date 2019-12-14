@@ -83,14 +83,9 @@ namespace ModelPredictingService
         private void CleanDirectory(string username)
         {
             Directory
-                .GetFiles(".\\", "*.csv", SearchOption.TopDirectoryOnly)
+                .GetDirectories(".\\", $"*_{username}", SearchOption.TopDirectoryOnly)
                 .ToList()
-                .ForEach(File.Delete);
-
-            Directory
-                .GetFiles(".\\", "*.h5", SearchOption.TopDirectoryOnly)
-                .ToList()
-                .ForEach(File.Delete);
+                .ForEach(path => Directory.Delete(path, true));
         }
     }
 }

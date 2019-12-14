@@ -41,4 +41,6 @@ if __name__ == '__main__':
     MODELS_PATH = args.models_dir
     PREDICTIONS = args.predictions_dir
 
+    os.mkdir(PREDICTIONS)
+
     predict(ROOT_DIT, MODELS_PATH, USERNAME, PREDICTIONS)

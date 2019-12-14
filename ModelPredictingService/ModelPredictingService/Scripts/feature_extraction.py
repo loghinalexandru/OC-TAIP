@@ -77,7 +77,6 @@ def process_all(root_dir: str, save_dir: str, window_frame=100):
 
 if __name__ == '__main__':
     print("Processing data.")
-    os.mkdir(SAVE_DIR)
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--raw_data_dir", "-raw_dir", default=ROOT_DIR, required=False)
@@ -87,5 +86,7 @@ if __name__ == '__main__':
 
     ROOT_DIR = args.raw_data_dir
     SAVE_DIR = args.save_processed_data
+
+    os.mkdir(SAVE_DIR)
 
     process_all(root_dir=ROOT_DIR, save_dir=SAVE_DIR)

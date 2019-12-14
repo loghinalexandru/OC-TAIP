@@ -19,13 +19,14 @@ namespace ModelPredictingService.Helpers
         {
             var process = new Process
             {
-                StartInfo = new ProcessStartInfo(pythonPath, _scriptPath)
+                StartInfo = new ProcessStartInfo(pythonPath)
                 {
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    Arguments = $"--raw_data_dir data_{_username} " +
-                                $"--save_processed_data processed_data{_username}"
+                    Arguments = _scriptPath +
+                                $" --raw_data_dir data_{_username} " +
+                                $" --save_processed_data processed_data_{_username} "
                 }
             };
 
