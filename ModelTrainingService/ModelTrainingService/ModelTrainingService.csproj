@@ -3,8 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>dotnet-ModelTrainingService-0D59068C-8136-44D6-AFF0-00A592480EB2</UserSecretsId>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <Content Remove="nlog.config" />
   </ItemGroup>
