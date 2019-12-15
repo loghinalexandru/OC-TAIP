@@ -19,18 +19,21 @@ namespace ModelPredictingService
         private readonly IStorageRepository _storageRepository;
         private readonly Options _options;
         private readonly IScriptRunner _scriptRunner;
+        private readonly IEmailHelper _emailHelper;
 
         public Worker(
             ILogger<Worker> logger,
             IQueueHelper queueHelper,
             IStorageRepository storageRepository,
             IScriptRunner scriptRunner,
+            IEmailHelper emailHelper,
             Options options)
         {
             _logger = logger;
             _queueHelper = queueHelper;
             _storageRepository = storageRepository;
             _scriptRunner = scriptRunner;
+            _emailHelper = emailHelper;
             _options = options;
 
             InitQueue();
@@ -64,6 +67,8 @@ namespace ModelPredictingService
 
                 _scriptRunner.Execute(new FeatureExtractionScript(_options.DataPreprocessingScriptPath, username));
                 _scriptRunner.Execute(new PredictionScript(_options.ModelPredictionScriptPath, username));
+
+                _emailHelper.SendEmail("asd@gmail.com");
             }
             catch (Exception ex)
             {
