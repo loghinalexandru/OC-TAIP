@@ -26,7 +26,6 @@ namespace JWTAuthority.DataAccess.Repository
             _context.SaveChanges();
         }
 
-        [NotNull]
         public User GetByUsername(string username)
         {
             return
