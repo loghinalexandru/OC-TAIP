@@ -18,7 +18,6 @@ namespace AccelerometerStorage.Business.Tests
         private Mock<IWriteRepository<DataFile>> dataFileWriteRepositoryMock;
         private Mock<IReadRepository<DataFile>> dataFileReadRepositoryMock;
         private Mock<IUserService> userServiceMock;
-        private Mock<IQueueHelper> queueHelperMock;
 
         private readonly string csvExampleFilename = "CsvExample.csv";
 
@@ -27,18 +26,20 @@ namespace AccelerometerStorage.Business.Tests
         {
             var command = GetAddDataCommand(FileType.Input);
             var user = UserFactory.GetUser();
+            var modelFile = DataFileFactory.GetModelFile(user);
 
             userServiceMock.Setup(service => service.GetByUsername(It.IsAny<string>()))
                 .ReturnsAsync(Maybe<User>.None);
             userServiceMock.Setup(service => service.AddUser(It.IsAny<AddUserCommand>()))
                 .ReturnsAsync(Result.Success(user));
+            dataFileReadRepositoryMock.Setup(repository => repository.Find(It.IsAny<Expression<Func<DataFile, bool>>>()))
+                .ReturnsAsync(new List<DataFile> { modelFile });
             fileStorageServiceMock.Setup(service => service.SaveFile(It.IsAny<SaveFileCommand>()))
                 .Returns(Task.CompletedTask);
             dataFileWriteRepositoryMock.Setup(repository => repository.Create(It.IsAny<DataFile>()))
                 .Returns(Task.CompletedTask);
             dataFileWriteRepositoryMock.Setup(repository => repository.Commit())
                 .Returns(Task.CompletedTask);
-            queueHelperMock.Setup(helper => helper.EnqueueMessage(It.IsAny<string>()));
 
             var result = await SystemUnderTest.AddData(command);
 
@@ -55,6 +56,8 @@ namespace AccelerometerStorage.Business.Tests
                 .ReturnsAsync(Maybe<User>.None);
             userServiceMock.Setup(service => service.AddUser(It.IsAny<AddUserCommand>()))
                 .ReturnsAsync(Result.Success(user));
+            dataFileReadRepositoryMock.Setup(repository => repository.Find(It.IsAny<Expression<Func<DataFile, bool>>>()))
+                .ReturnsAsync(new List<DataFile>());
 
             var result = await SystemUnderTest.AddData(command);
 
@@ -69,13 +72,14 @@ namespace AccelerometerStorage.Business.Tests
 
             userServiceMock.Setup(service => service.GetByUsername(It.IsAny<string>()))
                 .ReturnsAsync(Maybe<User>.From(user));
+            dataFileReadRepositoryMock.Setup(repository => repository.Find(It.IsAny<Expression<Func<DataFile, bool>>>()))
+                .ReturnsAsync(new List<DataFile>());
             fileStorageServiceMock.Setup(service => service.SaveFile(It.IsAny<SaveFileCommand>()))
                 .Returns(Task.CompletedTask);
             dataFileWriteRepositoryMock.Setup(repository => repository.Create(It.IsAny<DataFile>()))
                 .Returns(Task.CompletedTask);
             dataFileWriteRepositoryMock.Setup(repository => repository.Commit())
                 .Returns(Task.CompletedTask);
-            queueHelperMock.Setup(helper => helper.EnqueueMessage(It.IsAny<string>()));
 
             var result = await SystemUnderTest.AddData(command);
 
@@ -112,8 +116,7 @@ namespace AccelerometerStorage.Business.Tests
                 fileStorageServiceMock.Object,
                 dataFileWriteRepositoryMock.Object,
                 dataFileReadRepositoryMock.Object,
-                userServiceMock.Object,
-                queueHelperMock.Object);
+                userServiceMock.Object);
         }
 
         protected override void SetupMocks(MockRepository mockRepository)
@@ -122,7 +125,6 @@ namespace AccelerometerStorage.Business.Tests
             dataFileWriteRepositoryMock = mockRepository.Create<IWriteRepository<DataFile>>();
             dataFileReadRepositoryMock = mockRepository.Create<IReadRepository<DataFile>>();
             userServiceMock = mockRepository.Create<IUserService>();
-            queueHelperMock = mockRepository.Create<IQueueHelper>();
         }
 
         private AddDataCommand GetAddDataCommand(FileType fileType)

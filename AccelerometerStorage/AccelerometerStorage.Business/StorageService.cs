@@ -44,29 +44,28 @@ namespace AccelerometerStorage.Business
                     ? userService.AddUser(new AddUserCommand(command.Username))
                     : Task.FromResult(userResult));
 
-            var modelResult = await dataFileReadRepository.Find(file =>
+            var userModels = await dataFileReadRepository.Find(file =>
                 file.User.Username == command.Username && file.FileType == FileType.Model);
 
-            return userResult
-                .Map(u =>
+            return await userResult
+                .Bind(u => DataFile.Create(command.Filename, u, command.FileType))
+                .Tap(df =>
                 {
-                    var newFile = DataFile.Create(command.Filename, u, command.FileType);
-                    if (command.FileType == FileType.Input && modelResult.FirstOrDefault() != null && newFile.IsSuccess)
+                    if (command.FileType == FileType.Input && userModels.Any())
                     {
-                        newFile.Value.AddDomainEvent(new NewAccelerometerDataEvent {Message = command.Username});
+                        df.AddDomainEvent(new NewAccelerometerDataEvent { 
+                            Message = command.Username 
+                        });
                     }
-
-                    return newFile;
                 })
-                .Map(df =>
+                .Tap(df =>
                 {
                     var saveFileCommand = new SaveFileCommand(command.ContentStream, command.Filename, command.Username,
-                        df.Value.Id);
+                        df.Id);
                     fileStorageService.SaveFile(saveFileCommand);
-                    return df.Value;
                 })
-                .Map(df => dataFileWriteRepository.Create(df))
-                .Map(_ => dataFileWriteRepository.Commit());
+                .Tap(df => dataFileWriteRepository.Create(df))
+                .Tap(() => dataFileWriteRepository.Commit());
         }
 
         public async Task<MemoryStream> GetData(GetFilteredDataQuery query)
