@@ -16,9 +16,9 @@ namespace ModelPredictingService.DataAccess
                 new HttpClient {BaseAddress = new Uri(options.StorageEndpoint)};
         }
 
-        public async Task GetLatestUserData(string username)
+        public async Task GetLatestUserData(string username, string processGuid)
         {
-            var dataPath = $"data_{username}";
+            var dataPath = $"data_{processGuid}_{username}";
             var uri = new Uri(_client.BaseAddress + "/data/latest/" + username);
             var response = await _client.GetAsync(uri);
 
@@ -32,9 +32,9 @@ namespace ModelPredictingService.DataAccess
             await contentStream.CopyToAsync(file);
         }
 
-        public async Task GetLatestUserModel(string username)
+        public async Task GetLatestUserModel(string username, string processGuid)
         {
-            var modelPath = $"model_{username}";
+            var modelPath = $"model_{processGuid}_{username}";
             var uri = new Uri(_client.BaseAddress + "/models/latest/" + username);
             var response = await _client.GetAsync(uri);
 

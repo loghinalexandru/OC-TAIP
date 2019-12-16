@@ -8,11 +8,13 @@ namespace ModelPredictingService.Helpers
     {
         private readonly string _scriptPath;
         private readonly string _username;
+        private readonly string _processGuid;
 
-        public FeatureExtractionScript(string scriptPath, string username)
+        public FeatureExtractionScript(string scriptPath, string username, string processGuid)
         {
             _scriptPath = scriptPath;
             _username = username;
+            _processGuid = processGuid;
         }
 
         public void Run(string pythonPath)
@@ -25,8 +27,8 @@ namespace ModelPredictingService.Helpers
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     Arguments = _scriptPath +
-                                $" --raw_data_dir data_{_username} " +
-                                $" --save_processed_data processed_data_{_username} "
+                                $" --raw_data_dir data_{_processGuid}_{_username} " +
+                                $" --save_processed_data processed_data_{_processGuid}_{_username} "
                 }
             };
 

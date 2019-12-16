@@ -4,7 +4,7 @@ namespace ModelPredictingService.Models
 {
     public interface IStorageRepository
     {
-        Task GetLatestUserData(string username);
-        Task GetLatestUserModel(string username);
+        Task GetLatestUserData(string username, string processGuid);
+        Task GetLatestUserModel(string username, string processGuid);
     }
 }

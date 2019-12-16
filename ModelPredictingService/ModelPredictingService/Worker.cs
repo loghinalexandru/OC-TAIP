@@ -58,17 +58,20 @@ namespace ModelPredictingService
 
         private async void Consumer(object sender, BasicDeliverEventArgs args)
         {
+            var processGuid = Guid.NewGuid();
             var username = Encoding.UTF8.GetString(args.Body);
 
             try
             {
-                await _storageRepository.GetLatestUserData(username);
-                await _storageRepository.GetLatestUserModel(username);
+                await _storageRepository.GetLatestUserData(username, processGuid.ToString());
+                await _storageRepository.GetLatestUserModel(username, processGuid.ToString());
 
-                _scriptRunner.Execute(new FeatureExtractionScript(_options.DataPreprocessingScriptPath, username));
-                _scriptRunner.Execute(new PredictionScript(_options.ModelPredictionScriptPath, username));
+                _scriptRunner.Execute(new FeatureExtractionScript(_options.DataPreprocessingScriptPath, username,
+                    processGuid.ToString()));
+                _scriptRunner.Execute(new PredictionScript(_options.ModelPredictionScriptPath, username,
+                    processGuid.ToString()));
 
-                _emailHelper.SendEmail("asd@gmail.com");
+//                _emailHelper.SendEmail("asd@gmail.com");
             }
             catch (Exception ex)
             {
@@ -76,7 +79,7 @@ namespace ModelPredictingService
             }
             finally
             {
-                CleanDirectory(username);
+                CleanDirectory(username, processGuid.ToString());
             }
         }
 
@@ -85,10 +88,10 @@ namespace ModelPredictingService
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
         }
 
-        private void CleanDirectory(string username)
+        private void CleanDirectory(string username, string processGuid)
         {
             Directory
-                .GetDirectories(".\\", $"*_{username}", SearchOption.TopDirectoryOnly)
+                .GetDirectories(".\\", $"*{processGuid}_{username}", SearchOption.TopDirectoryOnly)
                 .ToList()
                 .ForEach(path => Directory.Delete(path, true));
         }
