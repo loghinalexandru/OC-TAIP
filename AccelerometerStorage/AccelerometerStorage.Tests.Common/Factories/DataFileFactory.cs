@@ -8,5 +8,10 @@ namespace AccelerometerStorage.Tests.Common
         {
             return DataFile.Create("CsvExample.csv", user, FileType.Input).Value;
         }
+
+        public static DataFile GetModelFile(User user)
+        {
+            return DataFile.Create("Model.h5", user, FileType.Model).Value;
+        }
     }
 }
