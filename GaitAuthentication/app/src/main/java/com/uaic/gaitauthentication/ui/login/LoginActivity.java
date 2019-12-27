@@ -118,20 +118,14 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void storeToken(String token) {
-        SharedPreferences.Editor preferences = getDefaultSharedPreferences(getApplicationContext()).edit();
-        preferences.putString("token", token);
-        preferences.commit();
-    }
-
     private void checkAuthentication() {
-
         SharedPreferences preferences = getDefaultSharedPreferences(getApplicationContext());
         String token = preferences.getString("token", null);
 
         if(token == null){
             token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImEubG9naGluIiwianRpIjoiMmNmNWFkODctNjE3OS00ZTFiLThmZTMtMTE1NmVmOTVmMTYyIiwic3ViIjoibG9naGluYWxleGFuZHJ1NjFAZ21haWwuY29tIiwiZXhwIjoxNjA2MTMzNDA5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODAifQ.JIqUzZuJQjMuW_WYeFzkqox8HN00CdOx8yTUdlruDx0";
             storeToken(token);
+            setUsername(token);
         }
 
         if (token != null && !isExpired(token)) {
@@ -145,5 +139,18 @@ public class LoginActivity extends AppCompatActivity {
         JWT jwt = new JWT(token);
 
         return jwt.isExpired(0);
+    }
+
+    private void setUsername(String token){
+        JWT jwt = new JWT(token);
+        SharedPreferences.Editor preferences = getDefaultSharedPreferences(getApplicationContext()).edit();
+        preferences.putString("username", jwt.getClaim("username").asString());
+        preferences.commit();
+    }
+
+    private void storeToken(String token) {
+        SharedPreferences.Editor preferences = getDefaultSharedPreferences(getApplicationContext()).edit();
+        preferences.putString("token", token);
+        preferences.commit();
     }
 }

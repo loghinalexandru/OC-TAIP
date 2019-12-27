@@ -24,16 +24,18 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.Observer;
+import androidx.preference.PreferenceManager;
 
-import com.uaic.gaitauthentication.ui.MainActivity;
 import com.uaic.gaitauthentication.R;
 import com.uaic.gaitauthentication.data.UploadRepository;
 import com.uaic.gaitauthentication.helpers.Constants;
 import com.uaic.gaitauthentication.helpers.Result;
+import com.uaic.gaitauthentication.ui.MainActivity;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -41,6 +43,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     private static final String CHANNEL_ID = "SensorsChannel";
     private SensorManager sensorManager;
+    private SharedPreferences.Editor preferences;
     private Sensor accelerometer;
     private Sensor stepDetector;
     private UploadRepository uploadRepository;
@@ -61,13 +64,14 @@ public class SensorService extends Service implements SensorEventListener {
         super.onCreate();
 
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this).edit();
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SensorService::WakeLock");
 
         try {
             sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
             uploadRepository = UploadRepository.getInstance(getTokenFromPreferences());
-            this.accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-            this.stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+            stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -144,6 +148,11 @@ public class SensorService extends Service implements SensorEventListener {
         if (isMoving && currentTimeStamp - lastStepTimeStamp > stepPauseThreshold) {
             isMoving = false;
             stepConsecutiveCounter = 0;
+
+            preferences.putLong("profileTime", getProfileTime() + (currentTimeStamp - initialStepTimeStamp));
+            preferences.commit();
+
+            removeNoise(getApplicationContext().getFilesDir() + "/" + currentFilePath);
             uploadRepository.upload(new File(getApplicationContext().getFilesDir() + "/" + currentFilePath));
         }
 
@@ -195,5 +204,37 @@ public class SensorService extends Service implements SensorEventListener {
         }
 
         return token;
+    }
+
+    private void removeNoise(String filePath) {
+        try {
+            RandomAccessFile file = new RandomAccessFile(filePath, "rw");
+            long lastEntryInFile = file.length() - 1;
+
+            for (long i = stepPauseThreshold / 20; i > 0; i--) {
+                while (true) {
+                    file.seek(lastEntryInFile);
+
+                    if(file.readByte() == '\n'){
+                        lastEntryInFile--;
+                        break;
+                    }
+
+                    lastEntryInFile--;
+                }
+            }
+
+            file.setLength(file.getFilePointer());
+            file.close();
+        } catch (IOException ex) {
+            Log.e("Exception", "File noise removal failed: " + ex.toString());
+        }
+    }
+
+    private long getProfileTime() {
+        return
+                PreferenceManager
+                        .getDefaultSharedPreferences(this)
+                        .getLong("profileTime", 0);
     }
 }

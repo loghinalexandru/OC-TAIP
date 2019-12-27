@@ -1,130 +1,86 @@
 package com.uaic.gaitauthentication.ui.profiles;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.uaic.gaitauthentication.R;
-import com.uaic.gaitauthentication.helpers.Profile;
+import com.uaic.gaitauthentication.helpers.Constants;
+import com.uaic.gaitauthentication.ui.services.SensorService;
 
-import java.util.List;
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class ProfilesFragment extends Fragment {
 
-    private ProfilesViewModel profilesViewModel;
-    private ListView profilesList;
-    private EditText dialogInput;
+    private Switch toggleProfile;
+    private TextView profileTime;
+    private Intent sensorService;
+    private String username;
+    private SharedPreferences preferences;
+    private SharedPreferences.OnSharedPreferenceChangeListener listner;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        profilesViewModel =
-                ViewModelProviders.of(this).get(ProfilesViewModel.class);
         View root = inflater.inflate(R.layout.fragment_profiles, container, false);
+        toggleProfile = root.findViewById(R.id.enable_profile);
+        profileTime = root.findViewById(R.id.profile_time);
 
-        profilesList = root.findViewById(R.id.profiles);
-        TextView emptyListText = root.findViewById(R.id.empty_list_view);
-        profilesList.setEmptyView(emptyListText);
+        sensorService = new Intent(getContext(), SensorService.class);
+        preferences = getDefaultSharedPreferences(getContext().getApplicationContext());
 
-        Button createProfile = root.findViewById(R.id.add_profile);
+        username = preferences.getString("username", null);
 
-        createProfile.setOnClickListener(new View.OnClickListener() {
+        toggleProfile.setChecked(preferences.getBoolean("isEnabled", false));
+        toggleProfile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                showProfileDialog();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences.Editor preferenceEditor = preferences.edit();
+                preferenceEditor.putBoolean("isEnabled", isChecked);
+                preferenceEditor.commit();
+
+                Bundle serviceData = new Bundle();
+                serviceData.putString("profileName", username);
+                sensorService.putExtras(serviceData);
+
+                if (isChecked) {
+                    sensorService.setAction(Constants.START_SERVICE);
+                    getContext().startService(sensorService);
+                } else {
+                    sensorService.setAction(Constants.STOP_SERVICE);
+                    getContext().startService(sensorService);
+                }
             }
         });
 
-        profilesViewModel.getProfileList().observe(getActivity(), new Observer<List<Profile>>() {
+        listner = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
-            public void onChanged(List<Profile> profiles) {
-                ArrayAdapter profileAdapter = new AdapterProfile(getContext(), R.layout.profile_list_item, profiles);
-                profilesList.setAdapter(profileAdapter);
-                profileAdapter.notifyDataSetChanged();
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                setProfileTime();
             }
-        });
+        };
+
+        preferences.registerOnSharedPreferenceChangeListener(listner);
+
+        setProfileTime();
 
         return root;
     }
 
-    private void showProfileDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    private void setProfileTime() {
+        long elapsedTime = preferences.getLong("profileTime", 0);
+        long days = (elapsedTime / (60 * 60 * 24 * 1000));
+        long hours = ((elapsedTime / (1000 * 60 * 60)) % 24);
+        long minutes = ((elapsedTime / (1000 * 60)) % 60);
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                List<Profile> profiles = profilesViewModel.getProfileList().getValue();
-                if(!isUnique(s.toString(), profiles)){
-                    dialogInput.setError("Duplicate profile name!");
-                }
-            }
-        };
-
-        builder.setTitle(getString(R.string.new_profile));
-
-        dialogInput = new EditText(getContext());
-        dialogInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        dialogInput.addTextChangedListener(textWatcher);
-
-        builder.setView(dialogInput);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                addProfileEntry(dialogInput.getText().toString());
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-    }
-
-    private void addProfileEntry(String profileName) {
-        List<Profile> profiles = profilesViewModel.getProfileList().getValue();
-        if (isUnique(profileName, profiles)) {
-            profiles.add(new Profile(profileName));
-            profilesViewModel.getProfileList().setValue(profiles);
-        } else {
-            dialogInput.setError("Duplicate profile name!");
-        }
-    }
-
-    private boolean isUnique(String profileName, List<Profile> profiles) {
-        for (int i = 0; i < profiles.size(); ++i) {
-            if (profiles.get(i).profileName.equals(profileName)) {
-                return false;
-            }
-        }
-
-        return true;
+        profileTime.setText(String.format("%dD %dH %dM", days, hours, minutes));
     }
 }
