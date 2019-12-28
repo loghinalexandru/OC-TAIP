@@ -146,11 +146,12 @@ public class SensorService extends Service implements SensorEventListener {
         long currentTimeStamp = java.lang.System.currentTimeMillis();
 
         if (isMoving && currentTimeStamp - lastStepTimeStamp > stepPauseThreshold) {
+            preferences.putLong("profileTime", getProfileTime() + (currentTimeStamp - initialStepTimeStamp));
+            preferences.putLong("profileSteps", getProfileSteps() + stepConsecutiveCounter);
+            preferences.commit();
+
             isMoving = false;
             stepConsecutiveCounter = 0;
-
-            preferences.putLong("profileTime", getProfileTime() + (currentTimeStamp - initialStepTimeStamp));
-            preferences.commit();
 
             removeNoise(getApplicationContext().getFilesDir() + "/" + currentFilePath);
             uploadRepository.upload(new File(getApplicationContext().getFilesDir() + "/" + currentFilePath));
@@ -173,7 +174,6 @@ public class SensorService extends Service implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     private void attachSensor() {
@@ -236,5 +236,12 @@ public class SensorService extends Service implements SensorEventListener {
                 PreferenceManager
                         .getDefaultSharedPreferences(this)
                         .getLong("profileTime", 0);
+    }
+
+    private long getProfileSteps(){
+        return
+                PreferenceManager
+                        .getDefaultSharedPreferences(this)
+                        .getLong("profileSteps", 0);
     }
 }
