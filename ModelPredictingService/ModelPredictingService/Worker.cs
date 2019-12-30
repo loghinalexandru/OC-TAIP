@@ -2,6 +2,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelPredictingService.Helpers;
 using ModelPredictingService.Models;
+using Newtonsoft.Json;
 using RabbitMQ.Client.Events;
 using System;
 using System.IO;
@@ -59,19 +60,20 @@ namespace ModelPredictingService
         private async void Consumer(object sender, BasicDeliverEventArgs args)
         {
             var processGuid = Guid.NewGuid();
-            var username = Encoding.UTF8.GetString(args.Body);
+            var userModel = JsonConvert.DeserializeObject<UserModel>(Encoding.UTF8.GetString(args.Body));
 
             try
             {
-                await _storageRepository.GetLatestUserData(username, processGuid.ToString());
-                await _storageRepository.GetLatestUserModel(username, processGuid.ToString());
+                await _storageRepository.GetLatestUserData(userModel.Username, processGuid.ToString());
+                await _storageRepository.GetLatestUserModel(userModel.Username, processGuid.ToString());
 
-                _scriptRunner.Execute(new FeatureExtractionScript(_options.DataPreprocessingScriptPath, username,
+                _scriptRunner.Execute(new FeatureExtractionScript(_options.DataPreprocessingScriptPath,
+                    userModel.Username,
                     processGuid.ToString()));
-                _scriptRunner.Execute(new PredictionScript(_options.ModelPredictionScriptPath, username,
+                _scriptRunner.Execute(new PredictionScript(_options.ModelPredictionScriptPath, userModel.Username,
                     processGuid.ToString()));
 
-//                _emailHelper.SendEmail("asd@gmail.com");
+//                _emailHelper.SendEmail(userModel.Email);
             }
             catch (Exception ex)
             {
@@ -79,7 +81,7 @@ namespace ModelPredictingService
             }
             finally
             {
-                CleanDirectory(username, processGuid.ToString());
+                CleanDirectory(userModel.Username, processGuid.ToString());
             }
         }
 

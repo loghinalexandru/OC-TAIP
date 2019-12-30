@@ -53,9 +53,7 @@ namespace AccelerometerStorage.Business
                 {
                     if (command.FileType == FileType.Input && userModels.Any())
                     {
-                        df.AddDomainEvent(new NewAccelerometerDataEvent { 
-                            Message = command.Username 
-                        });
+                        df.AddDomainEvent(new NewAccelerometerDataEvent(command.Username, command.Email));
                     }
                 })
                 .Tap(df =>

@@ -1,6 +1,6 @@
-﻿using System.IO;
-using AccelerometerStorage.Domain;
+﻿using AccelerometerStorage.Domain;
 using EnsureThat;
+using System.IO;
 
 namespace AccelerometerStorage.Business
 {
@@ -19,6 +19,8 @@ namespace AccelerometerStorage.Business
         }
 
         public string Username { get; }
+
+        public string Email { get; set; }
 
         public string Filename { get; }
 

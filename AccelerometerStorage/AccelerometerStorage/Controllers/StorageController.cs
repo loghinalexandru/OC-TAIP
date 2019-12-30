@@ -5,6 +5,8 @@ using EnsureThat;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace AccelerometerStorage.WebApi
@@ -33,7 +35,9 @@ namespace AccelerometerStorage.WebApi
         {
             var file = data.CsvFile;
             var username = HttpContext.ExtractUsername();
+
             var command = new AddDataCommand(username, file.FileName, file.OpenReadStream(), FileType.Input);
+            command.Email = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             var result = await storageService.AddData(command);
 
