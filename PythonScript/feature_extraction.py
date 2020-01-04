@@ -6,6 +6,8 @@ import pickle
 import datetime
 import time
 import argparse
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 ROOT_DIR = r"raw_data"
 ROOT_DIR = r"..\Dataset\CollectedData"
@@ -41,6 +43,8 @@ def get_instance_input(results: list):
 
 def process_file(filepath: str, window_interval=100):
     dataframe = pd.read_csv(filepath)
+    print("Removing NaN values from csv file.")
+    dataframe = dataframe.dropna()
     dataframe_size = dataframe.shape[0]
     result = []
 
@@ -56,6 +60,9 @@ def process_file(filepath: str, window_interval=100):
         result.append(get_instance_input([means, medians, magnitudes, peak_distances]))
 
     result = numpy.array(result)
+    print("Removing NaN values from processed data.")
+    print(True if True in numpy.isinf(result).any(axis=1) else False)
+    result = result[~numpy.isnan(result).any(axis=1)]
     return result
 
 
@@ -70,9 +77,9 @@ def process_all(root_dir: str, save_dir: str, window_frame=100):
             result = process_file(filepath=filepath, window_interval=window_frame)
             # print(result)
             save_path = os.path.join(save_to_dir, datetime.datetime.fromtimestamp(time.time()).strftime(
-                                         '%Y-%m-%d %H-%M-%S') + ".pickle")
-            with open(save_path, "wb") as fd:
-                pickle.dump(result, fd)
+                '%Y-%m-%d %H-%M-%S') + ".pickle")
+            # with open(save_path, "wb") as fd:
+            #     pickle.dump(result, fd)
     return
 
 

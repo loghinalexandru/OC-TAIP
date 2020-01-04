@@ -12,13 +12,13 @@ PROCESSED_DATA_DIR = r"processed_data"
 
 
 class Model:
-    def __init__(self, layer_sizes: list, input_size: int, batch_size=32, path_load=None):
+    def __init__(self, layer_sizes: list, input_size: int, batch_size=5, path_load=None):
         self.model = Sequential()
         self.model.add(Dense(layer_sizes[0], input_shape=(input_size,), activation='relu'))
         self.model.add(Dropout(0.5))
         self.model.add(Dense(layer_sizes[1], activation='relu'))
         self.model.add(Dropout(0.5))
-        self.model.add(Dense(layer_sizes[2], activation='softmax'))
+        self.model.add(Dense(layer_sizes[2], activation='sigmoid'))
         self.batch_size = batch_size
         if path_load:
             self.model.load_weights(path_load)
@@ -28,8 +28,8 @@ class Model:
         self.model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
         return
 
-    def train(self, x_train: np.array, y_train: np.array, x_validation: np.array, y_validation: np.array, batch_size=32,
-              epochs=5):
+    def train(self, x_train: np.array, y_train: np.array, x_validation: np.array, y_validation: np.array, batch_size=5,
+              epochs=20):
         self.model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, shuffle=True,
                        validation_data=(x_validation, y_validation))
         return
