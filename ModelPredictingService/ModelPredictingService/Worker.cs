@@ -73,7 +73,12 @@ namespace ModelPredictingService
                 _scriptRunner.Execute(new PredictionScript(_options.ModelPredictionScriptPath, userModel.Username,
                     processGuid.ToString()));
 
-//                _emailHelper.SendEmail(userModel.Email);
+                var matchCoefficient = GetMatchCoefficent($"predictions_{processGuid}_{userModel.Username}");
+
+                if(matchCoefficient < 51)
+                {
+                    _emailHelper.SendEmail(userModel.Email);
+                }
             }
             catch (Exception ex)
             {
@@ -96,6 +101,28 @@ namespace ModelPredictingService
                 .GetDirectories(".\\", $"*{processGuid}_{username}", SearchOption.TopDirectoryOnly)
                 .ToList()
                 .ForEach(path => Directory.Delete(path, true));
+        }
+
+        private decimal GetMatchCoefficent(string path)
+        {
+            var predictionFile = Directory.GetFiles(path).FirstOrDefault();
+            decimal factor = 0;
+            long secondsCount = 0;
+
+            if(predictionFile == null)
+            {
+                throw new ArgumentException("No prediction file has been generated!");
+            }
+
+            var lines = File.ReadLines(predictionFile);
+
+            foreach(var line in lines)
+            {
+                factor += decimal.Parse(line, System.Globalization.NumberStyles.Float);
+                secondsCount += 1;
+            }
+
+            return factor / secondsCount;
         }
     }
 }

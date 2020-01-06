@@ -6,7 +6,7 @@ import time
 import datetime
 import generate_model_train
 
-ROOT_DIT = r"processed_data"
+ROOT_DIT = r"to_predict"
 USERNAME = r"diana"
 MODELS_PATH = r"models"
 PREDICTIONS = r"predictions"
@@ -15,7 +15,7 @@ PREDICTIONS = r"predictions"
 def predict(root_dir: str, models_dir: str, username: str, save_to_dir: str):
     results = None
     model_path = os.path.join(models_dir, username + ".h5")
-    model = generate_model_train.Model([64, 64, 1], 10, 32, model_path)
+    model = generate_model_train.Model([16, 16, 1], 10, 5, model_path)
     for subdir, _, files in os.walk(root_dir):
         for file in files:
             with open(os.path.join(subdir, file), "rb") as fd:
@@ -23,7 +23,7 @@ def predict(root_dir: str, models_dir: str, username: str, save_to_dir: str):
                 if results is None:
                     results = model.predict(data)
                 else:
-                    results = numpy.append(model.predict(data))
+                    results = numpy.append(results, model.predict(data))
     filename = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H-%M-%S') + ".txt"
     numpy.savetxt(os.path.join(save_to_dir, filename), results)
 

@@ -4,10 +4,10 @@ using System.Net.Mail;
 
 namespace ModelPredictingService.Helpers
 {
-    public class YahooEmailHelper : IEmailHelper
+    public class GmailHelper : IEmailHelper
     {
         private const string Subject = "[GaitAuthenhication] Possible Intrusion Detected";
-        private const string Message = "Please ignore this message!";
+        private const string Message = "Your phone might have been stolen please disable all your accounts!";
         private const string Email = ".";
         private const string Password = ".";
 
@@ -15,7 +15,7 @@ namespace ModelPredictingService.Helpers
         {
             var loginInfo = new NetworkCredential(Email, Password);
             var mailMessage = new MailMessage();
-            var smtpClient = new SmtpClient("smtp.mail.yahoo.com", 465);
+            var smtpClient = new SmtpClient("smtp.gmail.com",587);
 
             mailMessage.From = new MailAddress(Email);
             mailMessage.To.Add(new MailAddress(address));

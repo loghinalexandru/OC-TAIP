@@ -23,7 +23,7 @@ namespace ModelPredictingService
                     var options = configuration.GetSection("Options").Get<Options>();
 
                     services.AddSingleton(options);
-                    services.AddSingleton<IEmailHelper, YahooEmailHelper>();
+                    services.AddSingleton<IEmailHelper, GmailHelper>();
                     services.AddSingleton<IScriptRunner, ScriptRunner>();
 
                     services.AddTransient<IQueueHelper, QueueHelper>();
