@@ -2,12 +2,11 @@ import os
 import numpy
 import pandas as pd
 import scipy.signal as signal
-import pickle
 import datetime
 import time
 import argparse
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
+import pickle
+
 
 ROOT_DIR = r"raw_data"
 ROOT_DIR = r"..\Dataset\CollectedData"
@@ -78,8 +77,8 @@ def process_all(root_dir: str, save_dir: str, window_frame=100):
             # print(result)
             save_path = os.path.join(save_to_dir, datetime.datetime.fromtimestamp(time.time()).strftime(
                 '%Y-%m-%d %H-%M-%S') + ".pickle")
-            # with open(save_path, "wb") as fd:
-            #     pickle.dump(result, fd)
+            with open(save_path, "wb") as fd:
+                pickle.dump(result, fd)
     return
 
 
