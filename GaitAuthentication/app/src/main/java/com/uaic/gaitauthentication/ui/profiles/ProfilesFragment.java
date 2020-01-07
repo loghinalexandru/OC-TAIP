@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,12 @@ import androidx.fragment.app.Fragment;
 import com.uaic.gaitauthentication.R;
 import com.uaic.gaitauthentication.helpers.Constants;
 import com.uaic.gaitauthentication.ui.services.SensorService;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -41,6 +48,8 @@ public class ProfilesFragment extends Fragment {
 
         sensorService = new Intent(getContext(), SensorService.class);
         preferences = getDefaultSharedPreferences(getContext().getApplicationContext());
+
+        setStorageRemoteServer();
 
         profileNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,4 +127,24 @@ public class ProfilesFragment extends Fragment {
         preferences.commit();
     }
 
+    private void setStorageRemoteServer(){
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try{
+                    String urlString = "https://raw.githubusercontent.com/loghinalexandru/OC-TAIP/master/remoteServers.txt";
+                    URL url = new URL(urlString);
+                    URLConnection conn = url.openConnection();
+                    InputStream is = conn.getInputStream();
+                    String result = new BufferedReader(new InputStreamReader(is)).readLine();
+                    is.close();
+                    Constants.setStorageServerBaseUrl(result);
+                }
+                catch (Exception ex)
+                {
+                    Log.d("HTTP CALL FAILURE", ex.toString());
+                }
+            }
+        }).start();
+    }
 }

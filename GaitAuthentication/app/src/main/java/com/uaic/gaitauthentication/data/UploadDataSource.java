@@ -1,6 +1,8 @@
 package com.uaic.gaitauthentication.data;
 
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.uaic.gaitauthentication.helpers.AsyncTaskHttpCall;
