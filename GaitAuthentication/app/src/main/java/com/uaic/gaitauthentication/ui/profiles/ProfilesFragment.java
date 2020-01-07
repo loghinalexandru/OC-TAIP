@@ -1,12 +1,16 @@
 package com.uaic.gaitauthentication.ui.profiles;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -24,7 +28,7 @@ public class ProfilesFragment extends Fragment {
     private Switch toggleProfile;
     private TextView profileTime;
     private Intent sensorService;
-    private String username;
+    private Button profileNameButton;
     private SharedPreferences preferences;
     private SharedPreferences.OnSharedPreferenceChangeListener listner;
 
@@ -33,11 +37,35 @@ public class ProfilesFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_profiles, container, false);
         toggleProfile = root.findViewById(R.id.enable_profile);
         profileTime = root.findViewById(R.id.profile_time);
+        profileNameButton = root.findViewById(R.id.profile_name);
 
         sensorService = new Intent(getContext(), SensorService.class);
         preferences = getDefaultSharedPreferences(getContext().getApplicationContext());
 
-        username = preferences.getString("username", null);
+        profileNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Profile Name");
+
+                final EditText input = new EditText(getContext());
+                builder.setView(input);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setProfileName(input.getText().toString());
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
 
         toggleProfile.setChecked(preferences.getBoolean("isEnabled", false));
         toggleProfile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -48,7 +76,7 @@ public class ProfilesFragment extends Fragment {
                 preferenceEditor.commit();
 
                 Bundle serviceData = new Bundle();
-                serviceData.putString("profileName", username);
+                serviceData.putString("profileName", preferences.getString("username", null));
                 sensorService.putExtras(serviceData);
 
                 if (isChecked) {
@@ -83,4 +111,11 @@ public class ProfilesFragment extends Fragment {
 
         profileTime.setText(String.format("%dD %dH %dM", days, hours, minutes));
     }
+
+    private void setProfileName(String profileName) {
+        SharedPreferences.Editor preferences = getDefaultSharedPreferences(getContext().getApplicationContext()).edit();
+        preferences.putString("username", profileName);
+        preferences.commit();
+    }
+
 }

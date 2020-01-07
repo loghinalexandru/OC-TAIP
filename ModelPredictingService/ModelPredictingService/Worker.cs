@@ -75,7 +75,7 @@ namespace ModelPredictingService
 
                 var matchCoefficient = GetMatchCoefficent($"predictions_{processGuid}_{userModel.Username}");
 
-                if(matchCoefficient < 51)
+                if(matchCoefficient < 0.51M)
                 {
                     _emailHelper.SendEmail(userModel.Email);
                 }
