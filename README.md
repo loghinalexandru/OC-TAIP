@@ -1,5 +1,5 @@
 # GaitAuthentication
-Repository that contains the source code developed in Advanced Software Engineering Techniques subject
+Repository that contains the source code developed in Advanced Software Engineering Techniques subject. Article: https://docs.google.com/document/d/12lk0e59Fczh6bVkEHyM0-0_Fx9nO8tju4SIathnyUqs/edit?usp=sharing
 # USAGE DETAILS
 - HUWAEI PHONES: DISABLE "MANAGE AUTOMATICALLY" FOR THE GAITAUTHENTICATION APP FROM POWER USAGE DETAILS INSIDE THE APPS MENU
 # Checklist
@@ -8,7 +8,7 @@ Repository that contains the source code developed in Advanced Software Engineer
 - [x] Android Accelerometer Data Collection Server
 - [x] Android Client
 - [x] Python Script Runner Server
-- [ ] Classification Model and Algorithm
+- [x] Classification Model and Algorithm
 - [x] Feature Extraction
 ***
 # Requirements Analysis
