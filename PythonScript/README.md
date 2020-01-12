@@ -13,6 +13,21 @@ python generate_model_train.py --save_models_dir="models" --processed_data_dir="
 python predict.py --root_to_predict="to_predict" --username="diana" --models_dir="models" --predictions_dir="predictions"
 ```
 
+# Update 12.01.2020
+- Trained on new data with more subjects 
+
+|Subject|Loss|Accuracy|Training size|Loss|Validation accuracy|Validation size|
+|---|---|---|--|---|---|---|
+|oana|0.3461|0.8500|520|0.2985|0.8836|842|
+|radu1|0.5016|0.7770|1027|0.4291|0.7245|842|
+|teodora|0.3181|0.8773|481|0.2935|0.8955|842|
+|cosmin|0.3908|0.8261|368|0.2272|0.8967|842|
+|alex3|0.1943|**0.9421**|1157|0.1323|**0.9584**|842|
+|andrei|0.5732|0.7139|671|0.5203|0.6983|842|
+|mihai|0.2595|0.8979|382|0.0948|**0.9727**|842|
+|diana|1.3116|0.4231|26|0.5405|0.9418|842|
+|stefan|0.4345|0.8188|552|0.2772|0.8575|842|
+
 # Update 4.01.2020
 - Improved model training
 - Removed NaN values from input feed
@@ -44,7 +59,3 @@ Be careful when uploading the csv files. When reading the data from Dataset\Coll
 - alex11.csv: 1 Null value on column z
 
 When collecting data through the phone, the file stops writing immediately, sometimes right in the middle of a new row. Check the end of the above files.
-
-## To do
-- [ ] Solve training issues for alex11, alex12 and alex14
-- [ ] Further improve training
