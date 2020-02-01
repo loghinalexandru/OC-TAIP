@@ -1,13 +1,13 @@
-﻿using AccelerometerStorage.Infrastructure;
-using Microsoft.AspNetCore.Http;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using AccelerometerStorage.Infrastructure;
+using Microsoft.AspNetCore.Http;
 
 namespace AccelerometerStorage.WebApi
 {
-    public sealed class ExtractUsernameImplementation : IExtractUsernameImplementation
+    public sealed class ExtractEmailImplementation : IExtractEmailImplementation
     {
-        public string ExtractUsername(HttpContext context)
+        public string ExtractEmail(HttpContext context)
         {
             var headerToken = context.Request.Headers["Authorization"].FirstOrDefault()
                 ?.Replace("Bearer", string.Empty)
@@ -16,7 +16,7 @@ namespace AccelerometerStorage.WebApi
             return
                 new JwtSecurityToken(headerToken)?
                     .Claims
-                    .FirstOrDefault(claim => claim.Type == CustomClaims.UsernameClaim)?
+                    .FirstOrDefault(claim => claim.Type == CustomClaims.EmailClaim)?
                     .Value;
         }
     }

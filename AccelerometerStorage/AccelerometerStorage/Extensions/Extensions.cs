@@ -6,8 +6,10 @@ namespace AccelerometerStorage.WebApi
     public static class Extensions
     {
         public static IExtractUsernameImplementation ExtractUsernameImplementation { get; set; } = new ExtractUsernameImplementation();
+        public static IExtractEmailImplementation ExtractEmailImplementation { get; set; } = new ExtractEmailImplementation();
 
         public static string ExtractUsername(this HttpContext context) => ExtractUsernameImplementation.ExtractUsername(context);
+        public static string ExtractEmail(this HttpContext context) => ExtractEmailImplementation.ExtractEmail(context);
 
         public static ResultResponse ToInternalResponse(this Result result)
         {

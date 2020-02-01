@@ -2,11 +2,8 @@
 using AccelerometerStorage.Domain;
 using CSharpFunctionalExtensions;
 using EnsureThat;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace AccelerometerStorage.WebApi
@@ -28,16 +25,16 @@ namespace AccelerometerStorage.WebApi
         }
 
         [HttpPost("upload")]
-        [Authorize]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddData([FromForm] DataModel data)
         {
             var file = data.CsvFile;
             var username = HttpContext.ExtractUsername();
+            var email = HttpContext.ExtractEmail();
 
-            var command = new AddDataCommand(username, file.FileName, file.OpenReadStream(), FileType.Input);
-            command.Email = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var command =
+                new AddDataCommand(username, file.FileName, file.OpenReadStream(), FileType.Input) {Email = email};
 
             var result = await storageService.AddData(command);
 
@@ -47,7 +44,6 @@ namespace AccelerometerStorage.WebApi
         }
 
         [HttpPost("user")]
-        [Authorize]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddUser()

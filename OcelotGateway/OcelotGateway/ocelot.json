@@ -1,7 +1,7 @@
 {
   "ReRoutes": [
     {
-      "DownstreamPathTemplate": "/Authority/token",
+      "DownstreamPathTemplate": "/authority/token",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -10,10 +10,10 @@
         }
       ],
       "UpstreamPathTemplate": "/authorize",
-      "UpstreamHttpMethod": [ "POST" ]
+      "UpstreamHttpMethod": ["POST"]
     },
     {
-      "DownstreamPathTemplate": "/Authority/register",
+      "DownstreamPathTemplate": "/authority/register",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -22,7 +22,19 @@
         }
       ],
       "UpstreamPathTemplate": "/register",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": ["POST"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/storage/upload",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 50435
+        }
+      ],
+      "UpstreamPathTemplate": "/upload",
+      "UpstreamHttpMethod": ["POST"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []

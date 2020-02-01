@@ -11,7 +11,6 @@ namespace AccelerometerStorage.Infrastructure
         {
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddSingleton<IQueueHelper, QueueHelper>();
-            services.AddSettings<JWTSettings>();
             services.AddSettings<StorageSettings>();
             services.AddSettings<QueueSettings>();
 

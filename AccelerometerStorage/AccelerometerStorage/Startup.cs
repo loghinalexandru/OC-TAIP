@@ -25,7 +25,6 @@ namespace AccelerometerStorage.WebApi
                 .AddPersistence(Configuration.GetConnectionString("StorageDatabase"))
                 .AddBusiness()
                 .AddInfrastructure()
-                .AddAuthentication(Configuration.GetSection(nameof(JWTSettings)))
                 .AddSwagger()
                 .AddGeneralConfiguration()
                 .BuildMvc();
@@ -51,8 +50,7 @@ namespace AccelerometerStorage.WebApi
                 .UseEndpoints(endpoints => { endpoints.MapControllers(); })
                 .UpdateDatabase()
                 .UseSwagger()
-                .UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Storage"))
-                .UseMvc();
+                .UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Storage"));
         }
     }
 }

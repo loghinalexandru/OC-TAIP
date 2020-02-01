@@ -73,31 +73,6 @@ namespace AccelerometerStorage.WebApi
             return services;
         }
 
-        public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfigurationSection jwtSection)
-        {
-            services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = jwtSection[nameof(JWTSettings.Issuer)],
-                        ValidAudience = jwtSection[nameof(JWTSettings.Audience)],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection[nameof(JWTSettings.Key)])),
-                    };
-                });
-
-            return services;
-        }
-
         private static IMvcBuilder AddJsonOptions(this IMvcBuilder builder)
         {
             builder.AddNewtonsoftJson(options =>
