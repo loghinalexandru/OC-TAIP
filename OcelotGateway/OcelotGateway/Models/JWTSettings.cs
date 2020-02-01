@@ -4,13 +4,14 @@ using System.Text;
 
 namespace OcelotGateway.Models
 {
-    public sealed class JWTSettings
+    public sealed class JwtSettings
     {
-        private JWTSettings()
+        private JwtSettings()
         {
         }
 
         public string AuthenticationScheme { get; private set; }
+
         public string Key { get; private set; }
 
         public string Issuer { get; private set; }
