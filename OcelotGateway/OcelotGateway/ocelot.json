@@ -10,7 +10,7 @@
         }
       ],
       "UpstreamPathTemplate": "/authorize",
-      "UpstreamHttpMethod": ["POST"]
+      "UpstreamHttpMethod": [ "POST" ]
     },
     {
       "DownstreamPathTemplate": "/authority/register",
@@ -22,7 +22,7 @@
         }
       ],
       "UpstreamPathTemplate": "/register",
-      "UpstreamHttpMethod": ["POST"]
+      "UpstreamHttpMethod": [ "POST" ]
     },
     {
       "DownstreamPathTemplate": "/api/storage/upload",
@@ -34,11 +34,14 @@
         }
       ],
       "UpstreamPathTemplate": "/upload",
-      "UpstreamHttpMethod": ["POST"],
+      "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
     }
-  ]
+  ],
+  "HttpHandlerOptions": {
+    "UseTracing": true
+  }
 }
